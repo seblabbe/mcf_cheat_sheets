@@ -1,3 +1,7 @@
+# coding=utf-8
+r"""
+Code for MCF Algorithms Cheat Sheets
+"""
 import slabbe.mult_cont_frac as mcf
 import numpy as np
 from sage.functions.other import floor
