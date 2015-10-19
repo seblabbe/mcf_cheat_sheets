@@ -6,11 +6,6 @@ import slabbe.mult_cont_frac as mcf
 import numpy as np
 from sage.functions.other import floor
 
-def write_to_file(filename, s):
-    with open(filename, 'w') as f:
-        f.write(s)
-        print "Creation of the file {}".format(filename)
-
 def algo_to_tex(algo, quick=True):
     n_iterations = 10^6
     ndivs = 40
@@ -38,10 +33,12 @@ def algo_to_tex(algo, quick=True):
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
     lines.append(r"\subsection{Definition}")
-    lines.append(r"TODO")
+    lines.append(r"\input{def_%s.tex}" % algo.name())
     lines.append(r"\subsection{Invariant measure}")
     lines.append(r"\includegraphics[width=\linewidth]{%s}" % file1)
     lines.append(r"\subsection{Density function}")
+    lines.append(r"TODO")
+    lines.append(r"\subsection{Cylinders}")
     lines.append(r"TODO")
     lines.append(r"\subsection{Natural extension}")
     lines.append(r"\includegraphics[width=\linewidth]{%s}" % file2)
@@ -100,6 +97,22 @@ def lyapunov(algo, ntimes, n_iterations):
     lines.append(r"\]")
     return "\n".join(lines)
 
+def substitutions(algo):
+    lines = []
+    D = algo.substitutions()
+    for k in sorted(D.keys()):
+        v = D[k]
+        lines.append(r"$\sigma(%s)=\left\{%s\right.$\\" % (k,latex(v)))
+    return '\n'.join(lines)
+
+###################
+# Utility functions
+###################
+def write_to_file(filename, s):
+    with open(filename, 'w') as f:
+        f.write(s)
+        print "Creation of the file {}".format(filename)
+
 def moy_error_to_plus_moins_notation(moy, error):
     r"""
     EXAMPLES::
@@ -117,12 +130,9 @@ def moy_error_to_plus_moins_notation(moy, error):
     s = r"{}\pm {}".format(rounded_moy, E)
     return s.rstrip('0')
 
-def substitutions(algo):
-    lines = []
-    for (k,v) in algo.substitutions().iteritems():
-        lines.append(r"$\sigma(%s)=\left\{%s\right.$\\" % (k,latex(v)))
-    return '\n'.join(lines)
-
+###################
+# Script
+###################
 algo_to_tex(mcf.ARP())
 algo_to_tex(mcf.Brun())
 algo_to_tex(mcf.Cassaigne())
