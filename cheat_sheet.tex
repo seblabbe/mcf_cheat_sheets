@@ -1,12 +1,10 @@
 \documentclass[10pt,landscape,a4paper]{article}
 
-
 %*****************************************************************************
 % Copyright (C) 2014 Volker Braun <vbraun.name@gmail.com> (git-cheat-sheet.tex)
 % Copyright (C) 2015 Sébastien Labbé (MCFAlgorithms cheat sheets)
 % Creative Commons Attribution-Share Alike 3.0 License.
 %*****************************************************************************
-
 
 \usepackage{multicol}
 \usepackage{calc}
@@ -16,8 +14,8 @@
 \usepackage{color,graphicx,overpic}
 \usepackage{hyperref}
 \usepackage[T1]{fontenc}
-\usepackage{fancyvrb}
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{lmodern}         % Polices vectorielles
+\usepackage[utf8]{inputenc}  % Codage UNICODE (UTF-8)
 
 \pdfinfo{
   /Title (MCF Algorithms cheat sheet.pdf)
@@ -33,12 +31,22 @@
 \ifthenelse{\lengthtest { \paperwidth = 11in}}
     { \geometry{top=.5in,left=.5in,right=.5in,bottom=.5in} }
     {\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
-        {\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
-        {\geometry{top=1cm,left=1cm,right=1cm,bottom=1cm} }
+        {\geometry{top=2cm,left=1cm,right=1cm,bottom=1cm} }
+        {\geometry{top=2cm,left=1cm,right=1cm,bottom=1cm} }
     }
 
-% Turn off header and footer
-\pagestyle{empty}
+
+% Page foot and header
+% \pagestyle{empty} % Turn off header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\fancyhf{} % remove footer header
+\lhead{MCF Algorithms Cheat Sheets}
+\chead{\rightmark}
+\rhead{S\'ebastien Labb\'e}
+\renewcommand{\headrulewidth}{0.4pt}  % remove header line
+\renewcommand{\footrulewidth}{0pt}  % default is 0pt
 
 % Redefine section commands to use less space
 \makeatletter
@@ -62,7 +70,7 @@
 
 % Don't print section numbers
 \setcounter{secnumdepth}{0}
-
+\setcounter{tocdepth}{1}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt plus 0.5ex}
@@ -72,10 +80,19 @@
 % -----------------------------------------------------------------------
 
 \begin{document}
+
+\title{Multidimensional Continued Fraction Algorithms Cheat Sheets}
+\author{Sébastien Labbé}
+
+\maketitle
+\thispagestyle{empty} % remove page number from first page (after maketitle)
+\tableofcontents
+\newpage
+
 \raggedright
 \footnotesize
-\begin{multicols}{3}
 
+\begin{multicols}{3}
 
 % multicol parameters
 % These lengths are set only within the two main columns
@@ -88,14 +105,6 @@
 \newcommand{\note}[1]{\hfill\textrm{\textcolor{gray}{#1}}}
 \newcommand{\args}[1]{\textit{\textcolor{blue}{#1}}}
 \newcommand{\stdout}[1]{\textcolor{Sepia}{#1}}
-
-% \fvset{frame=none,framesep=1mm,fontfamily=courier,fontsize=\scriptsize,numbers=left,framerule=.3mm,numbersep=1mm,commandchars=\\\{\}}
-
-\fvset{gobble=2,framesep=1mm,commandchars=\\\{\},xleftmargin=2mm,xrightmargin=4mm}
-
-\begin{center}
-  \Huge\textbf{MCF algorithms Cheat Sheets}
-\end{center}
 
 \input{section_Brun.tex}
 \input{section_ARrevert.tex}
