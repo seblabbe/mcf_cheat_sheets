@@ -13,6 +13,9 @@ content: code.sage
 	sage code.sage
 
 tikz2pdf:
+	tikz2pdf cylinders_ARP_n1.tikz
+	tikz2pdf cylinders_ARP_n2.tikz
+	tikz2pdf cylinders_ARP_n3.tikz
 	tikz2pdf nat_ext_ARP.tikz
 	tikz2pdf nat_ext_Brun.tikz
 	tikz2pdf nat_ext_Cassaigne.tikz

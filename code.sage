@@ -7,50 +7,35 @@ import numpy as np
 from sage.functions.other import floor
 
 def algo_to_tex(algo, quick=True):
-    n_iterations = 10^6
-    ndivs = 40
-
-    # File 1 : Invariant measure
-    algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
-    file1 = 'mesure_%s_iter%s_div%s.png' % (algo.name(), n_iterations, ndivs)
-
-    # File 2 : Natural extension
-    file2 = create_file_natural_extension(algo, quick)
-    #file2 = create_file_natural_extension_PIL(algo)
-
-    # Data 3 : Lyapunov exponents
-    ntimes = 10
-    n_iterations = 10^6
-    data = lyapunov(algo, ntimes, n_iterations)
-
-    # Substitutions
-    try:
-        subs = substitutions(algo)
-    except NotImplementedError:
-        subs = "TODO (not implemented)"
-
-    # latex code
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
     lines.append(r"\subsection{Definition}")
     lines.append(r"\input{def_%s.tex}" % algo.name())
     lines.append(r"\subsection{Invariant measure}")
-    lines.append(r"\includegraphics[width=\linewidth]{%s}" % file1)
+    lines.append(include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40))
     lines.append(r"\subsection{Density function}")
     lines.append(r"TODO")
     lines.append(r"\subsection{Cylinders}")
-    lines.append(r"TODO")
+    lines.append(include_graphics_cylinders(algo,1,width=.3))
+    lines.append(include_graphics_cylinders(algo,2,width=.3))
+    lines.append(include_graphics_cylinders(algo,3,width=.3))
     lines.append(r"\subsection{Natural extension}")
-    lines.append(r"\includegraphics[width=\linewidth]{%s}" % file2)
+    lines.append(include_graphics_nat_ext(algo, quick))
+    #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
-    lines.append(data)
+    lines.append(lyapunov(algo, ntimes=10, n_iterations=10^6))
     lines.append(r"\subsection{Substitutions}")
-    lines.append(subs)
+    lines.append(substitutions(algo))
     lines.append(r"\newpage")
     file_tex = 'section_{}.tex'.format(algo.name())
     write_to_file(file_tex, "\n".join(lines))
 
-def create_file_natural_extension(algo, quick=True):
+def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
+    algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
+    file = 'mesure_%s_iter%s_div%s.png' % (algo.name(), n_iterations, ndivs)
+    return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
+
+def include_graphics_nat_ext(algo, quick=True, width=1):
     if quick:
         n_iterations = 1000
         marksize = 1
@@ -58,13 +43,21 @@ def create_file_natural_extension(algo, quick=True):
         n_iterations = 3000
         marksize = .4
     s = algo.natural_extension_tikz(3000, marksize=.4, group_size="2 by 2")
-    file2 = 'nat_ext_{}'.format(algo.name())
-    file2_tikz = '{}.tikz'.format(file2)
-    file2_pdf = '{}.pdf'.format(file2)
-    write_to_file(file2_tikz, s)
-    return file2_pdf
+    file = 'nat_ext_{}'.format(algo.name())
+    write_to_file('{}.tikz'.format(file), s)
+    return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
 
-def create_file_natural_extension_PIL(algo):
+def include_graphics_cylinders(algo, n, width=.3):
+    try:
+        cocycle = algo.matrix_cocycle()
+    except NotImplementedError:
+        return "TODO (not implemented)"
+    s = cocycle.tikz_n_cylinders(n, scale=3)
+    file = 'cylinders_{}_n{}'.format(algo.name(), n)
+    write_to_file('{}.tikz'.format(file), s)
+    return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
+
+def include_graphics_nat_ext_PIL(algo, width=1):
     c = {}
     c[1] = c[2] = c[3] = [0,0,0]
     c[12] = c[13] = c[23] = c[21] = c[31] = c[32] = [255,0,0]
@@ -73,10 +66,10 @@ def create_file_natural_extension_PIL(algo):
     n_iterations = 10^3
     P = algo.natural_extension_part_png(n_iterations, draw=draw,
       branch_order=b, color_dict=c, urange=(-.6,.6), vrange=(-.6,.6))
-    filename = 'nat_ext_{}_{}'.format(algo.name(), draw)
-    P.save(filename)
-    print "Creation of the file {}".format(filename)
-    return filename
+    file = 'nat_ext_{}_{}.png'.format(algo.name(), draw)
+    P.save(file)
+    print "Creation of the file {}".format(file)
+    return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
 def lyapunov(algo, ntimes, n_iterations):
     rep = algo.lyapounov_exponents_sample(ntimes, n_iterations)
@@ -88,7 +81,7 @@ def lyapunov(algo, ntimes, n_iterations):
     lines.append(r"({} experiments of {} iterations each)\\".format(ntimes, n_iterations))
     lines.append(r"\[")
     lines.append(r"\begin{array}{lr}")
-    lines.append(r" & \mu \pm 2\sigma \\")
+    lines.append(r" & \mu \pm 2\sigma\\")
     lines.append(r"\hline")
     lines.append(r"\theta_1 & {}\\".format(A))
     lines.append(r"\theta_2 & {}\\".format(B))
@@ -99,7 +92,10 @@ def lyapunov(algo, ntimes, n_iterations):
 
 def substitutions(algo):
     lines = []
-    D = algo.substitutions()
+    try:
+        D = algo.substitutions()
+    except NotImplementedError:
+        return "TODO (not implemented)"
     for k in sorted(D.keys()):
         v = D[k]
         lines.append(r"$\sigma(%s)=\left\{%s\right.$\\" % (k,latex(v)))
