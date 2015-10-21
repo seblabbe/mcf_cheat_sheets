@@ -6,7 +6,7 @@ import slabbe.mult_cont_frac as mcf
 import numpy as np
 from sage.functions.other import floor
 
-def algo_to_tex(algo, quick=True):
+def algo_to_tex(algo, quick=True, cylinders_depth=[1,2,3]):
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
     lines.append(r"\subsection{Definition}")
@@ -16,9 +16,8 @@ def algo_to_tex(algo, quick=True):
     lines.append(r"\subsection{Density function}")
     lines.append(r"TODO")
     lines.append(r"\subsection{Cylinders}")
-    lines.append(include_graphics_cylinders(algo,1,width=.3))
-    lines.append(include_graphics_cylinders(algo,2,width=.3))
-    lines.append(include_graphics_cylinders(algo,3,width=.3))
+    for d in cylinders_depth:
+        lines.append(include_graphics_cylinders(algo,d,width=.3))
     lines.append(r"\subsection{Natural extension}")
     lines.append(include_graphics_nat_ext(algo, quick))
     #lines.append(include_graphics_nat_ext_PIL(algo))
@@ -37,8 +36,8 @@ def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
 
 def include_graphics_nat_ext(algo, quick=True, width=1):
     if quick:
-        n_iterations = 1000
-        marksize = 1
+        n_iterations = 500
+        marksize = 2
     else:
         n_iterations = 3000
         marksize = .4
@@ -129,8 +128,8 @@ def moy_error_to_plus_moins_notation(moy, error):
 ###################
 # Script
 ###################
-algo_to_tex(mcf.ARP())
-algo_to_tex(mcf.Brun())
-algo_to_tex(mcf.Cassaigne())
-algo_to_tex(mcf.ARrevert())
+algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
+algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3])
+algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
+algo_to_tex(mcf.ARrevert(), cylinders_depth=[1,2,3])
 
