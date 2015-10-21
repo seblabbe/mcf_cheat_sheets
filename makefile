@@ -9,6 +9,8 @@ bib:
 	pdflatex $(FILE).tex
 	pdflatex $(FILE).tex
 
+all: content tikz2pdf pdf
+
 content: code.sage
 	sage code.sage
 

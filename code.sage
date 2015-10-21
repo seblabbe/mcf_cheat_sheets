@@ -22,7 +22,7 @@ def algo_to_tex(algo, quick=True, cylinders_depth=[1,2,3]):
     lines.append(include_graphics_nat_ext(algo, quick))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
-    lines.append(lyapunov(algo, ntimes=10, n_iterations=10^6))
+    lines.append(lyapunov_array(algo, ntimes=10, n_iterations=10^6))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo))
     lines.append(r"\newpage")
@@ -70,7 +70,7 @@ def include_graphics_nat_ext_PIL(algo, width=1):
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
-def lyapunov(algo, ntimes, n_iterations):
+def lyapunov_array(algo, ntimes, n_iterations):
     rep = algo.lyapounov_exponents_sample(ntimes, n_iterations)
     T1, T2, U = map(np.array, rep)
     A = moy_error_to_plus_moins_notation(T1.mean(), 2*T1.std())
@@ -80,7 +80,7 @@ def lyapunov(algo, ntimes, n_iterations):
     lines.append(r"({} experiments of {} iterations each)\\".format(ntimes, n_iterations))
     lines.append(r"\[")
     lines.append(r"\begin{array}{lr}")
-    lines.append(r" & \mu \pm 2\sigma\\")
+    lines.append(r" & \text{Mean} \pm 2\cdot\text{SD}\\")
     lines.append(r"\hline")
     lines.append(r"\theta_1 & {}\\".format(A))
     lines.append(r"\theta_2 & {}\\".format(B))
@@ -131,5 +131,5 @@ def moy_error_to_plus_moins_notation(moy, error):
 algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
 algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3])
 algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
-algo_to_tex(mcf.ARrevert(), cylinders_depth=[1,2,3])
+algo_to_tex(mcf.ARrevert(), cylinders_depth=[1,2,3,4,5,6])
 
