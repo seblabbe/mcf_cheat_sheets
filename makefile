@@ -1,6 +1,6 @@
 FILE = cheat_sheet
 
-pdf: 
+update:
 	pdflatex $(FILE).tex
 
 bib:
@@ -10,6 +10,7 @@ bib:
 	pdflatex $(FILE).tex
 
 all: content tikz2pdf pdf
+	pdflatex $(FILE).tex
 
 content: code.sage
 	sage code.sage

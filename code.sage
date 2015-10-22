@@ -14,7 +14,7 @@ def algo_to_tex(algo, quick=True, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Invariant measure}")
     lines.append(include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40))
     lines.append(r"\subsection{Density function}")
-    lines.append(r"TODO")
+    lines.append(input_density(algo))
     lines.append(r"\subsection{Cylinders}")
     for d in cylinders_depth:
         lines.append(include_graphics_cylinders(algo,d,width=.3))
@@ -24,10 +24,20 @@ def algo_to_tex(algo, quick=True, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Lyapunov exponents}")
     lines.append(lyapunov_array(algo, ntimes=10, n_iterations=10^6))
     lines.append(r"\subsection{Substitutions}")
-    lines.append(substitutions(algo))
+    lines.append(substitutions(algo, ncols=3))
+    lines.append(r"\subsection{Matrices}")
+    lines.append(matrices(algo, ncols=2))
     lines.append(r"\newpage")
     file_tex = 'section_{}.tex'.format(algo.name())
     write_to_file(file_tex, "\n".join(lines))
+
+def input_density(algo):
+    import os
+    filename = "density_{}.tex".format(algo.name())
+    if os.path.exists(filename):
+        return r"\input{{{}}}".format(filename)
+    else:
+        return "Unknown"
 
 def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
     algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
@@ -89,15 +99,43 @@ def lyapunov_array(algo, ntimes, n_iterations):
     lines.append(r"\]")
     return "\n".join(lines)
 
-def substitutions(algo):
-    lines = []
+def substitutions(algo, ncols=3):
     try:
         D = algo.substitutions()
     except NotImplementedError:
         return "TODO (not implemented)"
-    for k in sorted(D.keys()):
-        v = D[k]
-        lines.append(r"$\sigma(%s)=\left\{%s\right.$\\" % (k,latex(v)))
+    lines = []
+    lines.append(r"\[")
+    lines.append(r"\begin{array}{%s}" % ('l'*ncols))
+    for i,key in enumerate(sorted(D.keys())):
+        v = D[key]
+        lines.append(r"\sigma(%s)=\left\{%s\right." % (key,latex(v)))
+        if i % ncols == ncols-1:
+            lines.append(r"\\")
+        else:
+            lines.append(r"&")
+    lines.append(r"\end{array}")
+    lines.append(r"\]")
+    return '\n'.join(lines)
+
+def matrices(algo, ncols=3):
+    try:
+        cocycle = algo.matrix_cocycle()
+    except NotImplementedError:
+        return "TODO (not implemented)"
+    D = cocycle.gens()
+    lines = []
+    lines.append(r"\[")
+    lines.append(r"\begin{array}{%s}" % ('l'*ncols))
+    for i,key in enumerate(sorted(D.keys())):
+        v = D[key]
+        lines.append(r"M({})={}".format(key,latex(v)))
+        if i % ncols == ncols-1:
+            lines.append(r"\\")
+        else:
+            lines.append(r"&")
+    lines.append(r"\end{array}")
+    lines.append(r"\]")
     return '\n'.join(lines)
 
 ###################
@@ -129,7 +167,7 @@ def moy_error_to_plus_moins_notation(moy, error):
 # Script
 ###################
 algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
-algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3])
+algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
 algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
 algo_to_tex(mcf.ARrevert(), cylinders_depth=[1,2,3,4,5,6])
 
