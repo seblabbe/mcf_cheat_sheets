@@ -30,6 +30,8 @@ def algo_to_tex(algo, quick=True, cylinders_depth=[1,2,3]):
     lines.append(r"\newpage")
     file_tex = 'section_{}.tex'.format(algo.name())
     write_to_file(file_tex, "\n".join(lines))
+    with open('sections.tex', 'a') as f:
+        f.write(r"\input{{{}}}".format(file_tex)+'\n')
 
 def input_density(algo):
     import os
@@ -40,7 +42,10 @@ def input_density(algo):
         return "Unknown"
 
 def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
-    algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
+    try:
+        algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
+    except ValueError:
+        return "Error during computation"
     file = 'mesure_%s_iter%s_div%s.png' % (algo.name(), n_iterations, ndivs)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
@@ -51,7 +56,11 @@ def include_graphics_nat_ext(algo, quick=True, width=1):
     else:
         n_iterations = 3000
         marksize = .4
-    s = algo.natural_extension_tikz(3000, marksize=.4, group_size="2 by 2")
+    try:
+        s = algo.natural_extension_tikz(n_iterations, marksize=marksize,
+                group_size="2 by 2")
+    except ValueError:
+        return "Error during computation"
     file = 'nat_ext_{}'.format(algo.name())
     write_to_file('{}.tikz'.format(file), s)
     return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
@@ -81,7 +90,10 @@ def include_graphics_nat_ext_PIL(algo, width=1):
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
 def lyapunov_array(algo, ntimes, n_iterations):
-    rep = algo.lyapounov_exponents_sample(ntimes, n_iterations)
+    try:
+        rep = algo.lyapounov_exponents_sample(ntimes, n_iterations)
+    except ValueError:
+        return "Error during computation"
     T1, T2, U = map(np.array, rep)
     A = moy_error_to_plus_moins_notation(T1.mean(), 2*T1.std())
     B = moy_error_to_plus_moins_notation(T2.mean(), 2*T2.std())
@@ -166,8 +178,13 @@ def moy_error_to_plus_moins_notation(moy, error):
 ###################
 # Script
 ###################
+open('sections.tex','w').close()
 algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
 algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
 algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
 algo_to_tex(mcf.ARrevert(), cylinders_depth=[1,2,3,4,5,6])
+#algo_to_tex(mcf.ArnouxRauzy(), cylinders_depth=[1,2,3,4,5,6])
+algo_to_tex(mcf.Meester(), cylinders_depth=[1,2,3])
+algo_to_tex(mcf.Poincare(), cylinders_depth=[1,2,3])
+algo_to_tex(mcf.Selmer(), cylinders_depth=[1,2,3])
 
