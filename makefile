@@ -9,7 +9,7 @@ bib:
 	pdflatex $(FILE).tex
 	pdflatex $(FILE).tex
 
-all: content tikz2pdf pdf
+all: content tikz2pdf
 	pdflatex $(FILE).tex
 
 content: code.sage
