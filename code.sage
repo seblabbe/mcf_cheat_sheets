@@ -183,10 +183,10 @@ def moy_error_to_plus_moins_notation(moy, error):
 open('sections.tex','w').close()
 algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
 algo_to_tex(mcf.Poincare(), cylinders_depth=[1,2,3,4])
-#algo_to_tex(mcf.ArnouxRauzy(), cylinders_depth=[1,2,3,4,5,6])
-algo_to_tex(mcf.Selmer(), cylinders_depth=[1,2,3])
+algo_to_tex(mcf.Selmer(), cylinders_depth=[1,2,3,4,5])
 algo_to_tex(mcf.Meester(), cylinders_depth=[1,2,3,4,5,6])
 algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
 algo_to_tex(mcf.Reverse(), cylinders_depth=[1,2,3,4,5,6])
 algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
 
+#algo_to_tex(mcf.ArnouxRauzy(), cylinders_depth=[1,2,3,4,5,6])
