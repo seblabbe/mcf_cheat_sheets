@@ -6,7 +6,9 @@ import slabbe.mult_cont_frac as mcf
 import numpy as np
 from sage.functions.other import floor
 
-def algo_to_tex(algo, quick=True, cylinders_depth=[1,2,3]):
+QUICK = True
+
+def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
     lines.append(r"\subsection{Definition}")
@@ -16,15 +18,25 @@ def algo_to_tex(algo, quick=True, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Density function}")
     lines.append(input_density(algo))
     lines.append(r"\subsection{Cylinders}")
+    if QUICK:
+        cylinders_depth.pop()
     for d in cylinders_depth:
         lines.append(include_graphics_cylinders(algo,d,width=.3))
     lines.append(r"\subsection{Natural extension}")
-    lines.append(include_graphics_nat_ext(algo, quick))
+    lines.append(include_graphics_nat_ext(algo))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
     lines.append(lyapunov_array(algo, ntimes=10, n_iterations=10^6))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
+    lines.append(r"\subsection{$S$-adic word example}")
+    lines.append(s_adic_word(algo, nsubs=5))
+    lines.append(r"\subsection{Discrepancy}")
+    lines.append(r"TODO")
+    lines.append(r"\subsection{Dual substitutions}")
+    lines.append(r"TODO")
+    lines.append(r"\subsection{E one star}")
+    lines.append(r"TODO")
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=2))
     lines.append(r"\newpage")
@@ -49,8 +61,8 @@ def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
     file = 'mesure_%s_iter%s_div%s.png' % (algo.name(), n_iterations, ndivs)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
-def include_graphics_nat_ext(algo, quick=True, width=1):
-    if quick:
+def include_graphics_nat_ext(algo, width=1):
+    if QUICK:
         n_iterations = 1200
         marksize = .8
     else:
@@ -149,6 +161,31 @@ def matrices(algo, ncols=3):
         else:
             lines.append(r"&")
     lines.append(r"\end{array}")
+    lines.append(r"\]")
+    return '\n'.join(lines)
+
+def s_adic_word(algo, nsubs=5, k=21):
+    start = (1,e,pi)
+    it = algo.coding_iterator(start)
+    try:
+        w = algo.s_adic_word(start)
+    except ValueError:
+        return "ValueError during computation"
+    lines = []
+    lines.append(r"Using vector $v={}$:".format(latex(start)))
+    lines.append(r"\begin{align*}")
+    lines.append(r"w &=")
+    for _ in range(nsubs):
+        key = next(it)
+        lines.append(r"\sigma({})".format(key))
+    lines.append(r"\cdots(1)\\")
+    lines.append(r"& = {}".format(w))
+    lines.append(r"\end{align*}")
+    C = map(w[:10000].number_of_factors, range(k))  
+    lines.append(r"Factor Complexity of $w$ is ")
+    lines.append(r"$(p_w(n))_{{0\leq n \leq {}}} =$".format(k-1))
+    lines.append(r"\[")
+    lines.append(r"({})".format(', '.join(map(str,C))))
     lines.append(r"\]")
     return '\n'.join(lines)
 
