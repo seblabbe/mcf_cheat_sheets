@@ -6,6 +6,8 @@ nat_ext*.tikz
 nat_ext*.pdf
 cylinders_*.tikz
 cylinders_*.pdf
+dual_patch_*.tikz
+dual_patch_*.pdf
 cheat_sheet.pdf
 
 ## Core latex/pdflatex auxiliary files:

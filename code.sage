@@ -36,7 +36,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Dual substitutions}")
     lines.append(r"TODO")
     lines.append(r"\subsection{E one star}")
-    lines.append(r"TODO")
+    lines.append(dual_patch(algo, (1,e,pi), 8, width=.6))
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=2))
     lines.append(r"\newpage")
@@ -188,6 +188,16 @@ def s_adic_word(algo, nsubs=5, k=21):
     lines.append(r"({})".format(', '.join(map(str,C))))
     lines.append(r"\]")
     return '\n'.join(lines)
+
+def dual_patch(algo, v, n, width=.8):
+    try:
+        P = algo.e_one_star_patch(v, n)
+    except NotImplementedError:
+        return "NotImplementedError during computation"
+    s = P.plot_tikz()
+    file = 'dual_patch_{}'.format(algo.name())
+    write_to_file('{}.tikz'.format(file), s)
+    return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
 
 ###################
 # Utility functions
