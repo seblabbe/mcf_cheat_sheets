@@ -34,9 +34,9 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Discrepancy}")
     lines.append(r"TODO")
     lines.append(r"\subsection{Dual substitutions}")
-    lines.append(r"TODO")
+    lines.append(dual_substitutions(algo, ncols=3))
     lines.append(r"\subsection{E one star}")
-    lines.append(dual_patch(algo, (1,e,pi), 8, width=.6))
+    lines.append(dual_patch(algo, (1,e,pi), minsize=100, nsubs=5, width=.6))
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=2))
     lines.append(r"\newpage")
@@ -130,19 +130,14 @@ def substitutions(algo, ncols=3):
         D = algo.substitutions()
     except NotImplementedError:
         return "TODO (not implemented)"
-    lines = []
-    lines.append(r"\[")
-    lines.append(r"\begin{array}{%s}" % ('l'*ncols))
-    for i,key in enumerate(sorted(D.keys())):
-        v = D[key]
-        lines.append(r"\sigma(%s)=\left\{%s\right." % (key,latex(v)))
-        if i % ncols == ncols-1:
-            lines.append(r"\\")
-        else:
-            lines.append(r"&")
-    lines.append(r"\end{array}")
-    lines.append(r"\]")
-    return '\n'.join(lines)
+    return dict_to_array(D, ncols, entry_code=r"\sigma({})=\left\{{{}\right.")
+
+def dual_substitutions(algo, ncols=3):
+    try:
+        D = algo.dual_substitutions()
+    except NotImplementedError:
+        return "TODO (not implemented)"
+    return dict_to_array(D, ncols, entry_code=r"\sigma^*({})=\left\{{{}\right.")
 
 def matrices(algo, ncols=3):
     try:
@@ -150,12 +145,15 @@ def matrices(algo, ncols=3):
     except NotImplementedError:
         return "TODO (not implemented)"
     D = cocycle.gens()
+    return dict_to_array(D, ncols, entry_code=r"M({})={}")
+
+def dict_to_array(D, ncols=3, entry_code=r"M({})={}"):
     lines = []
     lines.append(r"\[")
     lines.append(r"\begin{array}{%s}" % ('l'*ncols))
     for i,key in enumerate(sorted(D.keys())):
         v = D[key]
-        lines.append(r"M({})={}".format(key,latex(v)))
+        lines.append(entry_code.format(key,latex(v)))
         if i % ncols == ncols-1:
             lines.append(r"\\")
         else:
@@ -189,15 +187,33 @@ def s_adic_word(algo, nsubs=5, k=21):
     lines.append(r"\]")
     return '\n'.join(lines)
 
-def dual_patch(algo, v, n, width=.8):
+def dual_patch(algo, v, minsize=100, nsubs=5, width=.8):
     try:
+        n = 2
         P = algo.e_one_star_patch(v, n)
+        while len(P) < minsize:
+            n += 1
+            P = algo.e_one_star_patch(v, n)
     except NotImplementedError:
         return "NotImplementedError during computation"
+    except ValueError:
+        return "ValueError during computation"
+    it = algo.coding_iterator(v)
     s = P.plot_tikz()
     file = 'dual_patch_{}'.format(algo.name())
     write_to_file('{}.tikz'.format(file), s)
-    return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
+    lines = []
+    lines.append(r"Using vector $v={}$, the {}-th iteration on the cube is:".format(latex(v),n))
+    lines.append(r"\[")
+    for _ in range(nsubs):
+        key = next(it)
+        lines.append(r"E_1^*(\sigma*({}))".format(key))
+    lines.append(r"(cube)=")
+    lines.append(r"\]")
+    lines.append(r"\begin{center}")
+    lines.append(r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file))
+    lines.append(r"\end{center}")
+    return '\n'.join(lines)
 
 ###################
 # Utility functions
