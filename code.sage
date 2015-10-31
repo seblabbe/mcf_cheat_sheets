@@ -42,6 +42,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=2))
     lines.append(r"\end{refsegment}")
+    global REFSEGMENT_NUMBER
     lines.append(r"\printbibliography[segment={},".format(REFSEGMENT_NUMBER))
     REFSEGMENT_NUMBER += 1
     lines.append(r"heading=subbibliography,")
@@ -135,14 +136,14 @@ def substitutions(algo, ncols=3):
         D = algo.substitutions()
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err.message)
-    return dict_to_array(D, ncols, entry_code=r"\sigma({})=\left\{{{}\right.")
+    return dict_to_array(D, ncols, entry_code=r"\sigma_{{{}}}=\left\{{{}\right.")
 
 def dual_substitutions(algo, ncols=3):
     try:
         D = algo.dual_substitutions()
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err.message)
-    return dict_to_array(D, ncols, entry_code=r"\sigma^*({})=\left\{{{}\right.")
+    return dict_to_array(D, ncols, entry_code=r"\sigma^*_{{{}}}=\left\{{{}\right.")
 
 def matrices(algo, ncols=3):
     try:
@@ -150,7 +151,7 @@ def matrices(algo, ncols=3):
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err.message)
     D = cocycle.gens()
-    return dict_to_array(D, ncols, entry_code=r"M({})={}")
+    return dict_to_array(D, ncols, entry_code=r"M_{{{}}}={}")
 
 def dict_to_array(D, ncols=3, entry_code=r"M({})={}"):
     lines = []
@@ -180,7 +181,7 @@ def s_adic_word(algo, nsubs=5, k=21):
     lines.append(r"w &=")
     for _ in range(nsubs):
         key = next(it)
-        lines.append(r"\sigma({})".format(key))
+        lines.append(r"\sigma_{{{}}}".format(key))
     lines.append(r"\cdots(1)\\")
     lines.append(r"& = {}".format(w))
     lines.append(r"\end{align*}")
@@ -211,7 +212,7 @@ def dual_patch(algo, v, minsize=100, nsubs=5, width=.8):
     lines.append(r"\[")
     for _ in range(nsubs):
         key = next(it)
-        lines.append(r"E_1^*(\sigma^*({}))".format(key))
+        lines.append(r"E_1^*(\sigma^*_{{{}}})".format(key))
     if nsubs < n:
         lines.append(r"\cdots")
     lines.append(r"(\includegraphics[width=1em]{cube.pdf})=")
