@@ -9,6 +9,7 @@ cylinders_*.pdf
 dual_patch_*.tikz
 dual_patch_*.pdf
 cheat_sheet.pdf
+cube.pdf
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

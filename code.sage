@@ -7,10 +7,12 @@ import numpy as np
 from sage.functions.other import floor
 
 QUICK = True
+REFSEGMENT_NUMBER = 1
 
 def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
+    lines.append(r"\begin{refsegment}")
     lines.append(r"\subsection{Definition}")
     lines.append(r"\input{def_%s.tex}" % algo.name())
     lines.append(r"\subsection{Invariant measure}")
@@ -36,9 +38,14 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Dual substitutions}")
     lines.append(dual_substitutions(algo, ncols=3))
     lines.append(r"\subsection{E one star}")
-    lines.append(dual_patch(algo, (1,e,pi), minsize=100, nsubs=5, width=.6))
+    lines.append(dual_patch(algo, (1,e,pi), minsize=70, nsubs=5, width=.6))
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=2))
+    lines.append(r"\end{refsegment}")
+    lines.append(r"\printbibliography[segment={},".format(REFSEGMENT_NUMBER))
+    REFSEGMENT_NUMBER += 1
+    lines.append(r"heading=subbibliography,")
+    lines.append(r"title={References}]")
     lines.append(r"\newpage")
     file_tex = 'section_{}.tex'.format(algo.name())
     write_to_file(file_tex, "\n".join(lines))
@@ -56,8 +63,8 @@ def input_density(algo):
 def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
     try:
         algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
-    except ValueError:
-        return "Error during computation"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     file = 'mesure_%s_iter%s_div%s.png' % (algo.name(), n_iterations, ndivs)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
@@ -71,8 +78,8 @@ def include_graphics_nat_ext(algo, width=1):
     try:
         s = algo.natural_extension_tikz(n_iterations, marksize=marksize,
                 group_size="2 by 2")
-    except ValueError:
-        return "Error during computation"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     file = 'nat_ext_{}'.format(algo.name())
     write_to_file('{}.tikz'.format(file), s)
     return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
@@ -80,8 +87,8 @@ def include_graphics_nat_ext(algo, width=1):
 def include_graphics_cylinders(algo, n, width=.3):
     try:
         cocycle = algo.matrix_cocycle()
-    except NotImplementedError:
-        return "TODO (not implemented)"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     s = cocycle.tikz_n_cylinders(n, scale=3)
     file = 'cylinders_{}_n{}'.format(algo.name(), n)
     write_to_file('{}.tikz'.format(file), s)
@@ -104,10 +111,8 @@ def include_graphics_nat_ext_PIL(algo, width=1):
 def lyapunov_array(algo, ntimes, n_iterations):
     try:
         rep = algo.lyapounov_exponents_sample(ntimes, n_iterations)
-    except ValueError:
-        return "ValueError during computation"
-    except ZeroDivisionError:
-        return "ZeroDivisionError during computation"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     T1, T2, U = map(np.array, rep)
     A = moy_error_to_plus_moins_notation(T1.mean(), 2*T1.std())
     B = moy_error_to_plus_moins_notation(T2.mean(), 2*T2.std())
@@ -128,22 +133,22 @@ def lyapunov_array(algo, ntimes, n_iterations):
 def substitutions(algo, ncols=3):
     try:
         D = algo.substitutions()
-    except NotImplementedError:
-        return "TODO (not implemented)"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     return dict_to_array(D, ncols, entry_code=r"\sigma({})=\left\{{{}\right.")
 
 def dual_substitutions(algo, ncols=3):
     try:
         D = algo.dual_substitutions()
-    except NotImplementedError:
-        return "TODO (not implemented)"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     return dict_to_array(D, ncols, entry_code=r"\sigma^*({})=\left\{{{}\right.")
 
 def matrices(algo, ncols=3):
     try:
         cocycle = algo.matrix_cocycle()
-    except NotImplementedError:
-        return "TODO (not implemented)"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     D = cocycle.gens()
     return dict_to_array(D, ncols, entry_code=r"M({})={}")
 
@@ -167,8 +172,8 @@ def s_adic_word(algo, nsubs=5, k=21):
     it = algo.coding_iterator(start)
     try:
         w = algo.s_adic_word(start)
-    except ValueError:
-        return "ValueError during computation"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     lines = []
     lines.append(r"Using vector $v={}$:".format(latex(start)))
     lines.append(r"\begin{align*}")
@@ -194,26 +199,33 @@ def dual_patch(algo, v, minsize=100, nsubs=5, width=.8):
         while len(P) < minsize:
             n += 1
             P = algo.e_one_star_patch(v, n)
-    except NotImplementedError:
-        return "NotImplementedError during computation"
-    except ValueError:
-        return "ValueError during computation"
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
     it = algo.coding_iterator(v)
     s = P.plot_tikz()
     file = 'dual_patch_{}'.format(algo.name())
     write_to_file('{}.tikz'.format(file), s)
     lines = []
-    lines.append(r"Using vector $v={}$, the {}-th iteration on the cube is:".format(latex(v),n))
+    lines.append(r"Using vector $v={}$, the {}-th ".format(latex(v),n))
+    lines.append(r"iteration on the unit cube is:")
     lines.append(r"\[")
     for _ in range(nsubs):
         key = next(it)
-        lines.append(r"E_1^*(\sigma*({}))".format(key))
-    lines.append(r"(cube)=")
+        lines.append(r"E_1^*(\sigma^*({}))".format(key))
+    if nsubs < n:
+        lines.append(r"\cdots")
+    lines.append(r"(\includegraphics[width=1em]{cube.pdf})=")
     lines.append(r"\]")
     lines.append(r"\begin{center}")
     lines.append(r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file))
     lines.append(r"\end{center}")
     return '\n'.join(lines)
+
+def unit_cube():
+    from sage.combinat.e_one_star import E1Star, Patch, Face
+    cube = Patch([Face((1,0,0),1), Face((0,1,0),2), Face((0,0,1),3)])
+    s = cube.plot_tikz()
+    write_to_file('cube.tikz', s)
 
 ###################
 # Utility functions
@@ -244,6 +256,7 @@ def moy_error_to_plus_moins_notation(moy, error):
 # Script
 ###################
 open('sections.tex','w').close()
+unit_cube()
 algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
 algo_to_tex(mcf.Poincare(), cylinders_depth=[1,2,3,4])
 algo_to_tex(mcf.Selmer(), cylinders_depth=[1,2,3,4,5])
