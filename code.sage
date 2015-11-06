@@ -40,7 +40,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{E one star}")
     lines.append(dual_patch(algo, (1,e,pi), minsize=70, nsubs=5, width=.6))
     lines.append(r"\subsection{Matrices}")
-    lines.append(matrices(algo, ncols=2))
+    lines.append(matrices(algo, ncols=3))
     lines.append(r"\end{refsegment}")
     global REFSEGMENT_NUMBER
     lines.append(r"\printbibliography[segment={},".format(REFSEGMENT_NUMBER))
@@ -152,7 +152,8 @@ def matrices(algo, ncols=3):
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err.message)
     D = cocycle.gens()
-    return dict_to_array(D, ncols, entry_code=r"M_{{{}}}={}")
+    entry_code = r"M_{{{}}}={{\arraycolsep=2pt{}}}"
+    return dict_to_array(D, ncols, entry_code=entry_code)
 
 def dict_to_array(D, ncols=3, entry_code=r"M({})={}"):
     lines = []
@@ -256,7 +257,9 @@ def chiffres_significatifs(moy, error):
 ###################
 # Script
 ###################
-open('sections.tex','w').close()
+with open('sections.tex','w') as f:
+    # erase everything
+    pass
 unit_cube()
 algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
 algo_to_tex(mcf.Poincare(), cylinders_depth=[1,2,3,4])
@@ -267,3 +270,6 @@ algo_to_tex(mcf.Reverse(), cylinders_depth=[1,2,3,4,5,6])
 algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
 
 #algo_to_tex(mcf.ArnouxRauzy(), cylinders_depth=[1,2,3,4,5,6])
+with open('sections.tex','a') as f:
+    f.write("\n")
+    f.write(r"\input{source_code.tex}")

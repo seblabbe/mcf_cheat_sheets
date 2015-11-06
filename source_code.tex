@@ -1,0 +1,85 @@
+\section{Sage Code}
+\begin{refsegment}
+\subsection{Requirements}
+\begin{verbatim}
+sage -v
+sage -i slabbe-0.2.spkg
+tikz2pdf
+\end{verbatim}
+\subsection{Definition}
+\begin{verbatim}
+sage: import slabbe.mult_cont_frac as mcf
+sage: algo = mcf.Brun()
+\end{verbatim}
+\subsection{Invariant measure}
+\begin{verbatim}
+sage: algo.invariant_measure_plot(n_iterations=10^6,
+                                  ndivs=40,
+                                  norm='1')
+\end{verbatim}
+\subsection{Density function}
+This section is hand written.
+\subsection{Cylinders}
+\begin{verbatim}
+sage: cocycle = algo.matrix_cocycle()
+sage: s = cocycle.tikz_n_cylinders(3, scale=3)
+sage: view(s, tightpage=True)
+\end{verbatim}
+\subsection{Natural extension}
+\begin{verbatim}
+sage: n_iterations = 1200
+sage: marksize = .8
+sage: s = algo.natural_extension_tikz(n_iterations, 
+                                      marksize=marksize,
+                                      group_size="2 by 2")
+sage: view(s, tightpage=True)
+\end{verbatim}
+\subsection{Lyapunov exponents}
+\begin{verbatim}
+sage: ntimes=10 
+sage: n_iterations=10^6
+sage: rep = algo.lyapounov_exponents_sample(ntimes, 
+                                            n_iterations)
+sage: T1, T2, U = map(np.array, rep)
+sage: print T1.mean(), T1.std()
+sage: print T2.mean(), T2.std()
+sage: print U.mean(), U.std()
+\end{verbatim}
+\subsection{Substitutions}
+\begin{verbatim}
+sage: algo.substitutions()
+\end{verbatim}
+\subsection{$S$-adic word example}
+\begin{verbatim}
+sage: v = (1,e,pi)
+sage: it = algo.coding_iterator(v)
+sage: [next(it) for _ in range(10)]
+sage: algo.s_adic_word(v)
+sage: map(w[:10000].number_of_factors, range(21))  
+\end{verbatim}
+\subsection{Discrepancy}
+\begin{verbatim}
+TODO
+\end{verbatim}
+\subsection{Dual substitutions}
+\begin{verbatim}
+sage: D = algo.dual_substitutions()
+\end{verbatim}
+\subsection{E one star}
+\begin{verbatim}
+sage: v = (1,e,pi)
+sage: n = 8
+sage: P = algo.e_one_star_patch(v, n)
+sage: s = P.plot_tikz()
+sage: view(s, tightpage=True)
+\end{verbatim}
+\subsection{Matrices}
+\begin{verbatim}
+sage: cocycle = algo.matrix_cocycle()
+sage: cocycle.gens()
+\end{verbatim}
+\end{refsegment}
+\printbibliography[segment=8,
+heading=subbibliography,
+title={References}]
+\newpage

@@ -28,7 +28,7 @@ clean :
 	rm -f code.sage.py
 	rm -f tikz_2_pdf_all.sage.py
 	rm -f mesure*.png
-	rm -f section*.tex
+	rm -f section_*.tex
 	rm -f nat_ext*.tikz
 	rm -f nat_ext*.pdf
 	rm -f cylinders_*.tikz
