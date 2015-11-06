@@ -32,7 +32,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
     lines.append(r"\subsection{$S$-adic word example}")
-    lines.append(s_adic_word(algo, nsubs=5))
+    lines.append(s_adic_word(algo, nsubs=10))
     lines.append(r"\subsection{Discrepancy}")
     lines.append(r"TODO")
     lines.append(r"\subsection{Dual substitutions}")
@@ -115,18 +115,19 @@ def lyapunov_array(algo, ntimes, n_iterations):
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err.message)
     T1, T2, U = map(np.array, rep)
-    A = moy_error_to_plus_moins_notation(T1.mean(), 2*T1.std())
-    B = moy_error_to_plus_moins_notation(T2.mean(), 2*T2.std())
-    C = moy_error_to_plus_moins_notation(U.mean(), 2*U.std())
+    A = chiffres_significatifs(T1.mean(), T1.std())
+    B = chiffres_significatifs(T2.mean(), T2.std())
+    C = chiffres_significatifs(U.mean(), U.std())
     lines = []
-    lines.append(r"({} experiments of {} iterations each)\\".format(ntimes, n_iterations))
+    lines.append(r"({} experiments of ".format(ntimes))
+    lines.append(r"{} iterations each)\\".format(n_iterations))
     lines.append(r"\[")
-    lines.append(r"\begin{array}{lr}")
-    lines.append(r" & \text{Mean} \pm 2\cdot\text{SD}\\")
+    lines.append(r"\begin{array}{lrr}")
+    lines.append(r" & \text{Mean} & \text{SD}\\")
     lines.append(r"\hline")
-    lines.append(r"\theta_1 & {}\\".format(A))
-    lines.append(r"\theta_2 & {}\\".format(B))
-    lines.append(r"1-\theta_2/\theta_1 & {}".format(C))
+    lines.append(r"\theta_1 & {} & {}\\".format(*A))
+    lines.append(r"\theta_2 & {} & {}\\".format(*B))
+    lines.append(r"1-\theta_2/\theta_1 & {} & {}".format(*C))
     lines.append(r"\end{array}")
     lines.append(r"\]")
     return "\n".join(lines)
@@ -236,13 +237,13 @@ def write_to_file(filename, s):
         f.write(s)
         print "Creation of the file {}".format(filename)
 
-def moy_error_to_plus_moins_notation(moy, error):
+def chiffres_significatifs(moy, error):
     r"""
     EXAMPLES::
 
-        sage: moy_error_to_plus_moins_notation(123456.78887655, 0.000341)
+        sage: chiffres_significatifs(123456.78887655, 0.000341)
         '123456.7889\\pm 0.0003'
-        sage: moy_error_to_plus_moins_notation(123456.78887655, 341)
+        sage: chiffres_significatifs(123456.78887655, 341)
         '123500.\\pm 300.'
     """
     s = floor(log(abs(error), 10.))
@@ -250,8 +251,7 @@ def moy_error_to_plus_moins_notation(moy, error):
     E = chiffre * (10.**s)
     m = floor(log(abs(moy), 10.))
     rounded_moy = numerical_approx(moy, digits=m-s+1)
-    s = r"{}\pm {}".format(rounded_moy, E)
-    return s.rstrip('0')
+    return rounded_moy, str(E).rstrip('0')
 
 ###################
 # Script
