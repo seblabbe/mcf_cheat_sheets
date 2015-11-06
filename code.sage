@@ -9,6 +9,7 @@ from sage.functions.other import floor
 QUICK = True
 REFSEGMENT_NUMBER = 1
 
+@parallel
 def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
@@ -28,7 +29,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(include_graphics_nat_ext(algo))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
-    lines.append(lyapunov_array(algo, ntimes=10, n_iterations=10^6))
+    lines.append(lyapunov_array(algo, ntimes=30, n_iterations=10^6))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
     lines.append(r"\subsection{$S$-adic word example}")
@@ -113,25 +114,13 @@ def include_graphics_nat_ext_PIL(algo, width=1):
 
 def lyapunov_array(algo, ntimes, n_iterations):
     try:
-        rep = algo.lyapounov_exponents_sample(ntimes, n_iterations)
+        T = algo.lyapunov_exponents_table(ntimes, n_iterations)
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err.message)
-    T1, T2, U = map(np.array, rep)
-    A = chiffres_significatifs(T1.mean(), T1.std())
-    B = chiffres_significatifs(T2.mean(), T2.std())
-    C = chiffres_significatifs(U.mean(), U.std())
     lines = []
     lines.append(r"({} experiments of ".format(ntimes))
     lines.append(r"{} iterations each)\\".format(n_iterations))
-    lines.append(r"\[")
-    lines.append(r"\begin{array}{lrr}")
-    lines.append(r" & \text{Mean} & \text{SD}\\")
-    lines.append(r"\hline")
-    lines.append(r"\theta_1 & {} & {}\\".format(*A))
-    lines.append(r"\theta_2 & {} & {}\\".format(*B))
-    lines.append(r"1-\theta_2/\theta_1 & {} & {}".format(*C))
-    lines.append(r"\end{array}")
-    lines.append(r"\]")
+    lines.append(latex(T))
     return "\n".join(lines)
 
 def substitutions(algo, ncols=3):
@@ -297,6 +286,8 @@ def discrepancy_statistics(algo, length):
 
 def discrepancy_histogram(algo, length, width=.6, fontsize=30,
         figsize=[8,3]):
+    if QUICK:
+        length=20
     try:
         D = discrepancy_statistics(algo, length)
     except Exception as err:
@@ -322,22 +313,6 @@ def write_to_file(filename, s):
         f.write(s)
         print "Creation of the file {}".format(filename)
 
-def chiffres_significatifs(moy, error):
-    r"""
-    EXAMPLES::
-
-        sage: chiffres_significatifs(123456.78887655, 0.000341)
-        '123456.7889\\pm 0.0003'
-        sage: chiffres_significatifs(123456.78887655, 341)
-        '123500.\\pm 300.'
-    """
-    s = floor(log(abs(error), 10.))
-    chiffre = int(error / (10.**s))
-    E = chiffre * (10.**s)
-    m = floor(log(abs(moy), 10.))
-    rounded_moy = numerical_approx(moy, digits=m-s+1)
-    return rounded_moy, str(E).rstrip('0')
-
 ###################
 # Script
 ###################
@@ -347,14 +322,17 @@ if is_script:
         # erase everything
         pass
     unit_cube()
-    algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
-    algo_to_tex(mcf.Poincare(), cylinders_depth=[1,2,3,4])
-    algo_to_tex(mcf.Selmer(), cylinders_depth=[1,2,3,4,5])
-    algo_to_tex(mcf.FullySubtractive(), cylinders_depth=[1,2,3,4,5,6])
-    algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
-    algo_to_tex(mcf.Reverse(), cylinders_depth=[1,2,3,4,5,6])
-    algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
+    L = [(mcf.Brun(), [1,2,3,4]),
+        (mcf.Poincare(), [1,2,3,4]),
+        (mcf.Selmer(), [1,2,3,4,5]),
+        (mcf.FullySubtractive(), [1,2,3,4,5,6]),
+        (mcf.ARP(), [1,2,3]),
+        (mcf.Reverse(), [1,2,3,4,5,6]),
+        (mcf.Cassaigne(), [1,2,3,4,5,6,7,8,9]),
+        #(mcf.ArnouxRauzy(), [1,2,3,4,5,6])
+        ]
 
-    #algo_to_tex(mcf.ArnouxRauzy(), cylinders_depth=[1,2,3,4,5,6])
+    list(algo_to_tex(L))
+
     with open('sections.tex','a') as f:
         f.write(r"\input{source_code.tex}")

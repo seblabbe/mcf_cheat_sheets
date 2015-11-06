@@ -38,12 +38,12 @@ sage: view(s, tightpage=True)
 \begin{verbatim}
 sage: ntimes=10 
 sage: n_iterations=10^6
-sage: rep = algo.lyapounov_exponents_sample(ntimes, 
-                                            n_iterations)
-sage: T1, T2, U = map(np.array, rep)
-sage: print T1.mean(), T1.std()
-sage: print T2.mean(), T2.std()
-sage: print U.mean(), U.std()
+sage: algo.lyapunov_exponents_sample(ntimes, n_iterations)
+                          min       mean      max       std
++-----------------------+---------+---------+---------+---------+
+  $\theta_1$              0.3013    0.3046    0.3063    0.00093
+  $\theta_2$              -0.1131   -0.1122   -0.1113   0.00038
+  $1-\theta_2/\theta_1$   1.3674    1.3683    1.3694    0.00056
 \end{verbatim}
 \subsection{Substitutions}
 \begin{verbatim}
