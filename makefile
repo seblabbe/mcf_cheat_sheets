@@ -33,6 +33,8 @@ clean :
 	rm -f nat_ext*.pdf
 	rm -f cylinders_*.tikz
 	rm -f cylinders_*.pdf
+	rm -f dual_patch_*.tikz
+	rm -f dual_patch_*.pdf
 
 
 
