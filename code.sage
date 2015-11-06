@@ -34,11 +34,13 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{$S$-adic word example}")
     lines.append(s_adic_word(algo, nsubs=10))
     lines.append(r"\subsection{Discrepancy}")
-    lines.append(r"TODO")
+    lines.append(discrepancy_histogram(algo, length=50, width=.6,
+        fontsize=30,figsize=[8,3]))
     lines.append(r"\subsection{Dual substitutions}")
     lines.append(dual_substitutions(algo, ncols=3))
     lines.append(r"\subsection{E one star}")
-    lines.append(dual_patch(algo, (1,e,pi), minsize=70, nsubs=5, width=.6))
+    lines.append(dual_patch(algo, (1,e,pi), minsize=70, nsubs=5,
+        height="3cm"))
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=3))
     lines.append(r"\end{refsegment}")
@@ -195,7 +197,7 @@ def s_adic_word(algo, nsubs=5, k=21):
     lines.append(r"\]")
     return '\n'.join(lines)
 
-def dual_patch(algo, v, minsize=100, nsubs=5, width=.8):
+def dual_patch(algo, v, minsize=100, nsubs=5, height="3cm"):
     try:
         n = 2
         P = algo.e_one_star_patch(v, n)
@@ -220,7 +222,7 @@ def dual_patch(algo, v, minsize=100, nsubs=5, width=.8):
     lines.append(r"(\includegraphics[width=1em]{cube.pdf})=")
     lines.append(r"\]")
     lines.append(r"\begin{center}")
-    lines.append(r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file))
+    lines.append(r"\includegraphics[height={}]{{{}.pdf}}".format(height, file))
     lines.append(r"\end{center}")
     return '\n'.join(lines)
 
@@ -229,6 +231,88 @@ def unit_cube():
     cube = Patch([Face((1,0,0),1), Face((0,1,0),2), Face((0,0,1),3)])
     s = cube.plot_tikz()
     write_to_file('cube.tikz', s)
+
+def discrepancy(self, verbose=False):
+    r"""
+    Return the discrepancy i.e. the Tijdeman distance D(w) as defined in
+    the chairman paper.
+
+    INPUT:
+
+    - ``self`` - word path
+    - ``verbose`` - bool
+
+    EXAMPLES::
+
+        sage: W = WordPaths([0,1], ((1,0), (0,1)))
+        sage: w = W(words.ChristoffelWord(5,8))
+        sage: for c in w.conjugates(): print c, discrepancy(c)
+        0010010100101 12/13
+        0100101001010 7/13
+        1001010010100 10/13
+        0010100101001 10/13
+        0101001010010 7/13
+        1010010100100 12/13
+        0100101001001 8/13
+        1001010010010 9/13
+        0010100100101 11/13
+        0101001001010 6/13
+        1010010010100 11/13
+        0100100101001 9/13
+        1001001010010 8/13
+
+    """
+    v = self.abelian_vector()
+    lambda_ = vector(v) / sum(v)
+    pts = self.points()
+    L = [max(map(abs, lambda_ * i - pt)) for i, pt in enumerate(pts)]
+    if verbose:
+        print L
+    return max(L)
+
+
+def discrepancy_statistics(algo, length):
+    r"""
+    EXAMPLES::
+
+        sage: from slabbe.mult_cont_frac import Brun
+        sage: discrepancy_statistics(Brun(), 5)
+        {[1, 1, 3]: 6/5,
+         [1, 2, 2]: 4/5,
+         [1, 3, 1]: 4/5,
+         [2, 1, 2]: 4/5,
+         [2, 2, 1]: 4/5,
+         [3, 1, 1]: 4/5}
+    """
+    D = {}
+    W = WordPaths([1,2,3], steps = [(1,0,0), (0,1,0), (0,0,1)] )
+    for c in Compositions(length, length=3, min_part=1):
+        w = algo.s_adic_word(c)
+        if c!=w.abelian_vector(): 
+            v = w.abelian_vector()
+            raise ValueError("c={} but vector is {}".format(c,v))
+        w = W(w)
+        D[c] = discrepancy(w)
+    return D
+
+def discrepancy_histogram(algo, length, width=.6, fontsize=30,
+        figsize=[8,3]):
+    try:
+        D = discrepancy_statistics(algo, length)
+    except Exception as err:
+        return "{}: {}".format(err.__class__.__name__, err.message)
+    H = histogram(D.values())
+    file = 'discrepancy_histo_{}.png'.format(algo.name())
+    H.save(file, fontsize=fontsize, figsize=figsize)
+    print "Creation of the file {}".format(file)
+    lines = []
+    lines.append(r"Discrepancy for all {} s-adic words with directions".format(len(D)))
+    lines.append("$v\in\mathbb{N}^3_{>0}$")
+    lines.append(r"such that $v_1+v_2+v_3={}$:".format(length))
+    lines.append(r"\begin{center}")
+    lines.append(r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file))
+    lines.append(r"\end{center}")
+    return '\n'.join(lines)
 
 ###################
 # Utility functions
@@ -257,19 +341,20 @@ def chiffres_significatifs(moy, error):
 ###################
 # Script
 ###################
-with open('sections.tex','w') as f:
-    # erase everything
-    pass
-unit_cube()
-algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
-algo_to_tex(mcf.Poincare(), cylinders_depth=[1,2,3,4])
-algo_to_tex(mcf.Selmer(), cylinders_depth=[1,2,3,4,5])
-algo_to_tex(mcf.FullySubtractive(), cylinders_depth=[1,2,3,4,5,6])
-algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
-algo_to_tex(mcf.Reverse(), cylinders_depth=[1,2,3,4,5,6])
-algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
+is_script = True
+if is_script:
+    with open('sections.tex','w') as f:
+        # erase everything
+        pass
+    unit_cube()
+    algo_to_tex(mcf.Brun(), cylinders_depth=[1,2,3,4])
+    algo_to_tex(mcf.Poincare(), cylinders_depth=[1,2,3,4])
+    algo_to_tex(mcf.Selmer(), cylinders_depth=[1,2,3,4,5])
+    algo_to_tex(mcf.FullySubtractive(), cylinders_depth=[1,2,3,4,5,6])
+    algo_to_tex(mcf.ARP(), cylinders_depth=[1,2,3])
+    algo_to_tex(mcf.Reverse(), cylinders_depth=[1,2,3,4,5,6])
+    algo_to_tex(mcf.Cassaigne(), cylinders_depth=[1,2,3,4,5,6,7,8,9])
 
-#algo_to_tex(mcf.ArnouxRauzy(), cylinders_depth=[1,2,3,4,5,6])
-with open('sections.tex','a') as f:
-    f.write("\n")
-    f.write(r"\input{source_code.tex}")
+    #algo_to_tex(mcf.ArnouxRauzy(), cylinders_depth=[1,2,3,4,5,6])
+    with open('sections.tex','a') as f:
+        f.write(r"\input{source_code.tex}")
