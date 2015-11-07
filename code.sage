@@ -309,7 +309,7 @@ def lyapunov_global_comparison(algos, n_orbits, n_iterations):
     from slabbe.mcf_comparison import lyapunov_exponents_table
     T = lyapunov_exponents_table(algos, n_orbits, n_iterations)
     lines = []
-    lines.append(r"\section{Lyapunov experiments}")
+    lines.append(r"\section{Comparison of Lyapunov exponents}")
     lines.append(r"({} orbits of ".format(n_orbits))
     lines.append(r"{} iterations each)\\".format(n_iterations))
     lines.append(r"\begin{center}")
@@ -351,8 +351,4 @@ if is_script:
     algos = [mcf.Brun(), mcf.Poincare(), mcf.Selmer(), mcf.FullySubtractive(),
             mcf.ARP(), mcf.Reverse(), mcf.Cassaigne()]
     lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^7)
-
-    with open('sections.tex','a') as f:
-        f.write(r"\input{source_code.tex}")
-
 
