@@ -1,20 +1,34 @@
-\section{Sage Code}
-\subsection{Requirements}
+\section{Requirements}
+The image in these cheat sheets were created with the optional Sage package
+\texttt{slabbe-0.2.spkg}, the script \texttt{tikz2pdf} and Sage with the
+following version:
 \begin{verbatim}
 sage -v
-sage -i slabbe-0.2.spkg
-tikz2pdf
+SageMath Version 6.10.beta3, Release Date: 2015-11-05
 \end{verbatim}
-\subsection{Definition}
+My Sage package is available at:
 \begin{verbatim}
-sage: import slabbe.mult_cont_frac as mcf
-sage: algo = mcf.Brun()
+sage -p slabbe-0.2.spkg TODO
+tikz2pdf TODO
 \end{verbatim}
+Define a Multidimensional Continued Fraction algorithm:
+\begin{verbatim}
+sage: from slabbe.mult_cont_frac import Brun
+sage: algo = Brun()
+\end{verbatim}
+You may replace \texttt{Brun} above by any of the following:
+\begin{verbatim}
+Brun, Poincare, Selmer, FullySubtractive, 
+ARP, Reverse, Cassaigne
+\end{verbatim}
+\section{Sage Code}
+This section shows how to reproduce any of the results in these Cheat Sheets.
+\subsection{Definition}
+This section is hand written.
 \subsection{Invariant measure}
 \begin{verbatim}
 sage: algo.invariant_measure_plot(n_iterations=10^6,
-                                  ndivs=40,
-                                  norm='1')
+                 ndivs=40, norm='1')
 \end{verbatim}
 \subsection{Density function}
 This section is hand written.
@@ -26,18 +40,15 @@ sage: view(s, tightpage=True)
 \end{verbatim}
 \subsection{Natural extension}
 \begin{verbatim}
-sage: n_iterations = 1200
-sage: marksize = .8
-sage: s = algo.natural_extension_tikz(n_iterations, 
-                                      marksize=marksize,
-                                      group_size="2 by 2")
+sage: s = algo.natural_extension_tikz(n_iterations=1200, 
+               marksize=.8, group_size="2 by 2")
 sage: view(s, tightpage=True)
 \end{verbatim}
 \subsection{Lyapunov exponents}
+The algorithm that computes Lyapunov exponents was provided to me
+by Vincent Delecroix, in June 2013. I translated his C code into cython.
 \begin{verbatim}
-sage: ntimes=10 
-sage: n_iterations=10^6
-sage: algo.lyapunov_exponents_table(ntimes, n_iterations)
+sage: algo.lyapunov_exponents_table(n_orbits=10, n_iterations=10^6)
 \end{verbatim}
 \subsection{Substitutions}
 \begin{verbatim}
@@ -62,8 +73,7 @@ sage: D = algo.dual_substitutions()
 \subsection{E one star}
 \begin{verbatim}
 sage: v = (1,e,pi)
-sage: n = 8
-sage: P = algo.e_one_star_patch(v, n)
+sage: P = algo.e_one_star_patch(v, n=8)
 sage: s = P.plot_tikz()
 sage: view(s, tightpage=True)
 \end{verbatim}
