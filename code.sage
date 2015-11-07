@@ -7,13 +7,11 @@ import numpy as np
 from sage.functions.other import floor
 
 QUICK = True
-REFSEGMENT_NUMBER = 1
 
 @parallel
 def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
-    lines.append(r"\begin{refsegment}")
     lines.append(r"\subsection{Definition}")
     lines.append(r"\input{def_%s.tex}" % algo.name())
     lines.append(r"\subsection{Invariant measure}")
@@ -44,12 +42,6 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
         height="3cm"))
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=3))
-    lines.append(r"\end{refsegment}")
-    global REFSEGMENT_NUMBER
-    lines.append(r"\printbibliography[segment={},".format(REFSEGMENT_NUMBER))
-    REFSEGMENT_NUMBER += 1
-    lines.append(r"heading=subbibliography,")
-    lines.append(r"title={References}]")
     lines.append(r"\newpage")
     file_tex = 'section_{}.tex'.format(algo.name())
     write_to_file(file_tex, "\n".join(lines))
@@ -350,5 +342,5 @@ if is_script:
 
     algos = [mcf.Brun(), mcf.Poincare(), mcf.Selmer(), mcf.FullySubtractive(),
             mcf.ARP(), mcf.Reverse(), mcf.Cassaigne()]
-    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^7)
+    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^6)
 

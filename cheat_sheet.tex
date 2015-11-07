@@ -35,37 +35,6 @@
         {\geometry{top=2cm,left=1cm,right=1cm,bottom=1cm} }
     }
 
-% Biblio separe en sections
-% http://www.khirevich.com/latex/biblatex/
-\usepackage[hyperref=true,
-            url=false,
-	    doi=false,
-            isbn=false,
-	    citestyle=alphabetic,
-	    defernumbers=true,
-	    %style=trad-alpha,
-	    %style=alphabetic,
-            style=numeric-comp,
-            backend=bibtex,
-            backref=false,
-	    firstinits=true,
-            block=none,
-            maxbibnames=100,
-            maxcitenames=3]{biblatex}
-            %citereset=chapter,
-            %style=custom-numeric-comp,
-
-% % from http://tex.stackexchange.com/questions/10682/suppress-in-biblatex
-\renewbibmacro{in:}{%
-  \ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}}
-
-\bibliography{biblio}
-%\addbibresource{biblio.bib}
-
-% espace vertical dans la bibliographie
-\setlength{\biblabelsep}{0.1\labelsep}
-
-
 % Page foot and header
 % \pagestyle{empty} % Turn off header and footer
 \usepackage{fancyhdr}
@@ -144,13 +113,12 @@
 % \end{Verbatim}
 
 
-% % You can even have references
-% \rule{0.3\linewidth}{0.25pt}
-% \scriptsize
-% \bibliographystyle{abstract}
-% \bibliography{refFile}
+% You can even have references
+\rule{0.3\linewidth}{0.25pt}
+\scriptsize
+\bibliographystyle{plain}
+\bibliography{biblio}
 
-\printbibliography
 \end{multicols}
 \end{document}
 
