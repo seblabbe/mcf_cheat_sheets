@@ -11,6 +11,7 @@ dual_patch_*.pdf
 cheat_sheet.pdf
 discrepancy_histo_*.png
 cube.pdf
+lyapunov_table.tex
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
