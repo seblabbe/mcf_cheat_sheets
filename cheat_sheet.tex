@@ -116,14 +116,8 @@
 
 \maketitle
 \thispagestyle{empty} % remove page number from first page (after maketitle)
-\tableofcontents
-\newpage
-
-\raggedright
-\footnotesize
 
 \begin{multicols}{3}
-
 % multicol parameters
 % These lengths are set only within the two main columns
 %\setlength{\columnseprule}{0.25pt}
@@ -131,10 +125,17 @@
 \setlength{\postmulticols}{1pt}
 \setlength{\multicolsep}{1pt}
 \setlength{\columnsep}{2pt}
-
 \newcommand{\note}[1]{\hfill\textrm{\textcolor{gray}{#1}}}
 \newcommand{\args}[1]{\textit{\textcolor{blue}{#1}}}
 \newcommand{\stdout}[1]{\textcolor{Sepia}{#1}}
+
+\tableofcontents
+
+\raggedright
+\footnotesize
+
+\columnbreak
+\input{source_code.tex}
 
 \input{sections.tex}
 
@@ -149,8 +150,8 @@
 % \bibliographystyle{abstract}
 % \bibliography{refFile}
 
-\end{multicols}
 \printbibliography
+\end{multicols}
 \end{document}
 
 

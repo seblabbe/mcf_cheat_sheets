@@ -68,7 +68,7 @@ def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
     try:
         algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     file = 'mesure_%s_iter%s_div%s.png' % (algo.name(), n_iterations, ndivs)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
@@ -83,7 +83,7 @@ def include_graphics_nat_ext(algo, width=1):
         s = algo.natural_extension_tikz(n_iterations, marksize=marksize,
                 group_size="2 by 2")
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     file = 'nat_ext_{}'.format(algo.name())
     write_to_file('{}.tikz'.format(file), s)
     return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
@@ -92,7 +92,7 @@ def include_graphics_cylinders(algo, n, width=.3):
     try:
         cocycle = algo.matrix_cocycle()
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     s = cocycle.tikz_n_cylinders(n, scale=3)
     file = 'cylinders_{}_n{}'.format(algo.name(), n)
     write_to_file('{}.tikz'.format(file), s)
@@ -116,7 +116,7 @@ def lyapunov_array(algo, ntimes, n_iterations):
     try:
         T = algo.lyapunov_exponents_table(ntimes, n_iterations)
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     lines = []
     lines.append(r"({} experiments of ".format(ntimes))
     lines.append(r"{} iterations each)\\".format(n_iterations))
@@ -127,21 +127,21 @@ def substitutions(algo, ncols=3):
     try:
         D = algo.substitutions()
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     return dict_to_array(D, ncols, entry_code=r"\sigma_{{{}}}=\left\{{{}\right.")
 
 def dual_substitutions(algo, ncols=3):
     try:
         D = algo.dual_substitutions()
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     return dict_to_array(D, ncols, entry_code=r"\sigma^*_{{{}}}=\left\{{{}\right.")
 
 def matrices(algo, ncols=3):
     try:
         cocycle = algo.matrix_cocycle()
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     D = cocycle.gens()
     entry_code = r"M_{{{}}}={{\arraycolsep=2pt{}}}"
     return dict_to_array(D, ncols, entry_code=entry_code)
@@ -167,7 +167,7 @@ def s_adic_word(algo, nsubs=5, k=21):
     try:
         w = algo.s_adic_word(start)
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     lines = []
     lines.append(r"Using vector $v={}$:".format(latex(start)))
     lines.append(r"\begin{align*}")
@@ -194,7 +194,7 @@ def dual_patch(algo, v, minsize=100, nsubs=5, height="3cm"):
             n += 1
             P = algo.e_one_star_patch(v, n)
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     it = algo.coding_iterator(v)
     s = P.plot_tikz()
     file = 'dual_patch_{}'.format(algo.name())
@@ -291,7 +291,7 @@ def discrepancy_histogram(algo, length, width=.6, fontsize=30,
     try:
         D = discrepancy_statistics(algo, length)
     except Exception as err:
-        return "{}: {}".format(err.__class__.__name__, err.message)
+        return "{}: {}".format(err.__class__.__name__, err)
     H = histogram(D.values())
     file = 'discrepancy_histo_{}.png'.format(algo.name())
     H.save(file, fontsize=fontsize, figsize=figsize)
@@ -304,6 +304,21 @@ def discrepancy_histogram(algo, length, width=.6, fontsize=30,
     lines.append(r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file))
     lines.append(r"\end{center}")
     return '\n'.join(lines)
+
+def lyapunov_global_comparison(algos, n_orbits, n_iterations):
+    from slabbe.mcf_comparison import lyapunov_exponents_table
+    T = lyapunov_exponents_table(algos, n_orbits, n_iterations)
+    lines = []
+    lines.append(r"\section{Lyapunov experiments}")
+    lines.append(r"({} orbits of ".format(n_orbits))
+    lines.append(r"{} iterations each)\\".format(n_iterations))
+    lines.append(r"\begin{center}")
+    lines.append(latex(T))
+    lines.append(r"\end{center}")
+    with open('lyapunov_table.tex','w') as f:
+        f.write('\n'.join(lines))
+    with open('sections.tex','a') as f:
+        f.write(r"\input{lyapunov_table.tex}")
 
 ###################
 # Utility functions
@@ -331,8 +346,13 @@ if is_script:
         (mcf.Cassaigne(), [1,2,3,4,5,6,7,8,9]),
         #(mcf.ArnouxRauzy(), [1,2,3,4,5,6])
         ]
-
     list(algo_to_tex(L))
+
+    algos = [mcf.Brun(), mcf.Poincare(), mcf.Selmer(), mcf.FullySubtractive(),
+            mcf.ARP(), mcf.Reverse(), mcf.Cassaigne()]
+    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^7)
 
     with open('sections.tex','a') as f:
         f.write(r"\input{source_code.tex}")
+
+

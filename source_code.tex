@@ -1,5 +1,4 @@
 \section{Sage Code}
-\begin{refsegment}
 \subsection{Requirements}
 \begin{verbatim}
 sage -v
@@ -38,12 +37,7 @@ sage: view(s, tightpage=True)
 \begin{verbatim}
 sage: ntimes=10 
 sage: n_iterations=10^6
-sage: algo.lyapunov_exponents_sample(ntimes, n_iterations)
-                          min       mean      max       std
-+-----------------------+---------+---------+---------+---------+
-  $\theta_1$              0.3013    0.3046    0.3063    0.00093
-  $\theta_2$              -0.1131   -0.1122   -0.1113   0.00038
-  $1-\theta_2/\theta_1$   1.3674    1.3683    1.3694    0.00056
+sage: algo.lyapunov_exponents_table(ntimes, n_iterations)
 \end{verbatim}
 \subsection{Substitutions}
 \begin{verbatim}
@@ -78,8 +72,4 @@ sage: view(s, tightpage=True)
 sage: cocycle = algo.matrix_cocycle()
 sage: cocycle.gens()
 \end{verbatim}
-\end{refsegment}
-\printbibliography[segment=8,
-heading=subbibliography,
-title={References}]
 \newpage
