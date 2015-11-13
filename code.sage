@@ -111,7 +111,7 @@ def lyapunov_array(algo, ntimes, n_iterations):
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     lines = []
-    lines.append(r"({} experiments of ".format(ntimes))
+    lines.append(r"(using {} orbits of ".format(ntimes))
     lines.append(r"{} iterations each)\\".format(n_iterations))
     lines.append(latex(T))
     return "\n".join(lines)
