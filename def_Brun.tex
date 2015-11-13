@@ -9,3 +9,24 @@ is defined by
 \]
 where $\pi\in\mathcal{S}_3$ is the permutation of $\{1,2,3\}$ such that
 $x_{\pi 1}<x_{\pi 2}<x_{\pi 3}$ \cite{MR0111735}.
+\subsection{Matrix Definition}
+The partition of the cone is
+$\Lambda=\cup_{\pi\in\mathcal{S}_3}\Lambda_\pi$ where
+\[
+    \Lambda_\pi = \{(x_1,x_2,x_3)\in\Lambda\mid 
+	x_{\pi 1}< x_{\pi 2}< x_{\pi 3}\}.
+\]
+The matrices are given by the rule
+\[
+    M(\mathbf{x}) = M_\pi
+    \qquad\text{ if and only if }\qquad
+    \mathbf{x}\in\Lambda_\pi.
+\]
+The map $F$ on $\Lambda$ and
+the projective map $f$ on
+$\Delta=\{\mathbf{x}\in\Lambda\mid\Vert\mathbf{x}\Vert_1=1\}$ are:
+\[
+    F(\mathbf{x}) = M(\mathbf{x})^{-1}\mathbf{x}
+    \qquad\text{and}\qquad
+    f(\mathbf{x}) = \frac{F(\mathbf{x})}{\Vert F(\mathbf{x})\Vert_1}.
+\]
