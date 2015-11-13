@@ -3,6 +3,7 @@ r"""
 Code for MCF Algorithms Cheat Sheets
 """
 import slabbe.mult_cont_frac as mcf
+from slabbe import TikzPicture
 import numpy as np
 from sage.functions.other import floor
 
@@ -77,9 +78,9 @@ def include_graphics_nat_ext(algo, width=1):
                 group_size="2 by 2")
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
-    file = 'nat_ext_{}'.format(algo.name())
-    write_to_file('{}.tikz'.format(file), s)
-    return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
+    file = 'nat_ext_{}.pdf'.format(algo.name())
+    print s.pdf(file)
+    return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
 def include_graphics_cylinders(algo, n, width=.3):
     try:
@@ -87,9 +88,9 @@ def include_graphics_cylinders(algo, n, width=.3):
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     s = cocycle.tikz_n_cylinders(n, scale=3)
-    file = 'cylinders_{}_n{}'.format(algo.name(), n)
-    write_to_file('{}.tikz'.format(file), s)
-    return r"\includegraphics[width={}\linewidth]{{{}.pdf}}".format(width, file)
+    file = 'cylinders_{}_n{}.pdf'.format(algo.name(), n)
+    print s.pdf(file)
+    return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
 def include_graphics_nat_ext_PIL(algo, width=1):
     c = {}
@@ -191,8 +192,8 @@ def dual_patch(algo, v, minsize=100, nsubs=5, height="3cm"):
         return "{}: {}".format(err.__class__.__name__, err)
     it = algo.coding_iterator(v)
     s = P.plot_tikz()
-    file = 'dual_patch_{}'.format(algo.name())
-    write_to_file('{}.tikz'.format(file), s)
+    file = 'dual_patch_{}.pdf'.format(algo.name())
+    print TikzPicture(s).pdf(file)
     lines = []
     lines.append(r"Using vector $v={}$, the {}-th ".format(latex(v),n))
     lines.append(r"iteration on the unit cube is:")
@@ -205,7 +206,7 @@ def dual_patch(algo, v, minsize=100, nsubs=5, height="3cm"):
     lines.append(r"(\includegraphics[width=1em]{cube.pdf})=")
     lines.append(r"\]")
     lines.append(r"\begin{center}")
-    lines.append(r"\includegraphics[height={}]{{{}.pdf}}".format(height, file))
+    lines.append(r"\includegraphics[height={}]{{{}}}".format(height, file))
     lines.append(r"\end{center}")
     return '\n'.join(lines)
 
@@ -213,7 +214,7 @@ def unit_cube():
     from sage.combinat.e_one_star import E1Star, Patch, Face
     cube = Patch([Face((1,0,0),1), Face((0,1,0),2), Face((0,0,1),3)])
     s = cube.plot_tikz()
-    write_to_file('cube.tikz', s)
+    print TikzPicture(s).pdf('cube.pdf')
 
 def discrepancy(self, verbose=False):
     r"""
@@ -311,8 +312,6 @@ def lyapunov_global_comparison(algos, n_orbits, n_iterations):
     lines.append(r"\end{center}")
     with open('lyapunov_table.tex','w') as f:
         f.write('\n'.join(lines))
-    with open('sections.tex','a') as f:
-        f.write(r"\input{lyapunov_table.tex}")
 
 ###################
 # Utility functions
