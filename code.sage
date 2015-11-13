@@ -27,7 +27,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(include_graphics_nat_ext(algo))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
-    lines.append(lyapunov_array(algo, ntimes=30, n_iterations=10^6))
+    lines.append(lyapunov_array(algo, ntimes=30, n_iterations=10^7))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
     lines.append(r"\subsection{$S$-adic word example}")
@@ -105,8 +105,9 @@ def include_graphics_nat_ext_PIL(algo, width=1):
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
 def lyapunov_array(algo, ntimes, n_iterations):
+    from slabbe.lyapunov import lyapunov_table
     try:
-        T = algo.lyapunov_exponents_table(ntimes, n_iterations)
+        T = lyapunov_table(algo, ntimes, n_iterations)
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     lines = []
@@ -298,8 +299,8 @@ def discrepancy_histogram(algo, length, width=.6, fontsize=30,
     return '\n'.join(lines)
 
 def lyapunov_global_comparison(algos, n_orbits, n_iterations):
-    from slabbe.mcf_comparison import lyapunov_exponents_table
-    T = lyapunov_exponents_table(algos, n_orbits, n_iterations)
+    from slabbe.lyapunov import lyapunov_comparison_table
+    T = lyapunov_comparison_table(algos, n_orbits, n_iterations)
     lines = []
     lines.append(r"\section{Comparison of Lyapunov exponents}")
     lines.append(r"({} orbits of ".format(n_orbits))
@@ -342,5 +343,5 @@ if is_script:
 
     algos = [mcf.Brun(), mcf.Poincare(), mcf.Selmer(), mcf.FullySubtractive(),
             mcf.ARP(), mcf.Reverse(), mcf.Cassaigne()]
-    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^6)
+    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^7)
 

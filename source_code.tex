@@ -48,7 +48,8 @@ sage: view(s, tightpage=True)
 The algorithm that computes Lyapunov exponents was provided to me
 by Vincent Delecroix, in June 2013. I translated his C code into cython.
 \begin{verbatim}
-sage: algo.lyapunov_exponents_table(n_orbits=10, n_iterations=10^6)
+sage: from slabbe.lyapunov import lyapunov_table
+sage: lyapunov_table(algo, n_orbits=30, n_iterations=10^7)
 \end{verbatim}
 \subsection{Substitutions}
 \begin{verbatim}
@@ -68,12 +69,11 @@ TODO
 \end{verbatim}
 \subsection{Dual substitutions}
 \begin{verbatim}
-sage: D = algo.dual_substitutions()
+sage: algo.dual_substitutions()
 \end{verbatim}
 \subsection{E one star}
 \begin{verbatim}
-sage: v = (1,e,pi)
-sage: P = algo.e_one_star_patch(v, n=8)
+sage: P = algo.e_one_star_patch(v=(1,e,pi), n=8)
 sage: s = P.plot_tikz()
 sage: view(s, tightpage=True)
 \end{verbatim}
@@ -82,4 +82,12 @@ sage: view(s, tightpage=True)
 sage: cocycle = algo.matrix_cocycle()
 sage: cocycle.gens()
 \end{verbatim}
-\newpage
+\subsection{Comparison of Lyapunov exponents}
+\begin{verbatim}
+sage: import slabbe.mult_cont_frac as mcf
+sage: from slabbe.lyapunov import lyapunov_comparison_table
+sage: algos = [mcf.Brun(), mcf.Selmer(), mcf.ARP(), mcf.Reverse(),
+      mcf.Cassaigne()]
+sage: lyapunov_comparison_table(algos, n_orbits=30, 
+                                n_iterations=10^7)
+\end{verbatim}
