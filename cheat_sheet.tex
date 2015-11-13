@@ -107,13 +107,26 @@
 \newpage
 
 \input{sections.tex}
+\end{multicols}
+
+\footnotesize
+\input{lyapunov_table.tex}
+
+\begin{multicols}{3}
+% multicol parameters
+% These lengths are set only within the two main columns
+%\setlength{\columnseprule}{0.25pt}
+\setlength{\premulticols}{1pt}
+\setlength{\postmulticols}{1pt}
+\setlength{\multicolsep}{1pt}
+\setlength{\columnsep}{2pt}
+\newcommand{\note}[1]{\hfill\textrm{\textcolor{gray}{#1}}}
+\newcommand{\args}[1]{\textit{\textcolor{blue}{#1}}}
+\newcommand{\stdout}[1]{\textcolor{Sepia}{#1}}
+\raggedright
+\footnotesize
 
 \input{source_code.tex}
-
-% \begin{Verbatim}
-%   yo
-% \end{Verbatim}
-
 
 % You can even have references
 \rule{0.3\linewidth}{0.25pt}

@@ -25,18 +25,23 @@ ARP, Reverse, Cassaigne
 This section shows how to reproduce any of the results in these Cheat Sheets.
 \subsection{Definition}
 This section is hand written.
-\subsection{Invariant measure}
+\subsection{Matrices}
 \begin{verbatim}
-sage: algo.invariant_measure_plot(n_iterations=10^6,
-                 ndivs=40, norm='1')
+sage: cocycle = algo.matrix_cocycle()
+sage: cocycle.gens()
 \end{verbatim}
-\subsection{Density function}
-This section is hand written.
 \subsection{Cylinders}
 \begin{verbatim}
 sage: cocycle = algo.matrix_cocycle()
 sage: s = cocycle.tikz_n_cylinders(3, scale=3)
 sage: view(s, tightpage=True)
+\end{verbatim}
+\subsection{Density function}
+This section is hand written.
+\subsection{Invariant measure}
+\begin{verbatim}
+sage: algo.invariant_measure_plot(n_iterations=10^6,
+                 ndivs=40, norm='1')
 \end{verbatim}
 \subsection{Natural extension}
 \begin{verbatim}
@@ -76,11 +81,6 @@ sage: algo.dual_substitutions()
 sage: P = algo.e_one_star_patch(v=(1,e,pi), n=8)
 sage: s = P.plot_tikz()
 sage: view(s, tightpage=True)
-\end{verbatim}
-\subsection{Matrices}
-\begin{verbatim}
-sage: cocycle = algo.matrix_cocycle()
-sage: cocycle.gens()
 \end{verbatim}
 \subsection{Comparison of Lyapunov exponents}
 \begin{verbatim}

@@ -14,20 +14,23 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\section{%s algorithm}" % algo.name())
     lines.append(r"\subsection{Definition}")
     lines.append(r"\input{def_%s.tex}" % algo.name())
-    lines.append(r"\subsection{Invariant measure}")
-    lines.append(include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40))
-    lines.append(r"\subsection{Density function}")
-    lines.append(input_density(algo))
+    lines.append(r"\subsection{Matrices}")
+    lines.append(matrices(algo, ncols=3))
     lines.append(r"\subsection{Cylinders}")
     if QUICK:
         cylinders_depth.pop()
     for d in cylinders_depth:
         lines.append(include_graphics_cylinders(algo,d,width=.3))
+    lines.append(r"\subsection{Density function}")
+    lines.append(input_density(algo))
+    lines.append(r"\subsection{Invariant measure}")
+    lines.append(include_graphics_inv_measure(algo, n_iterations=10^6,
+        ndivs=40, width=.8))
     lines.append(r"\subsection{Natural extension}")
     lines.append(include_graphics_nat_ext(algo))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
-    lines.append(lyapunov_array(algo, ntimes=30, n_iterations=10^7))
+    lines.append(lyapunov_array(algo, ntimes=30, n_iterations=10^6))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
     lines.append(r"\subsection{$S$-adic word example}")
@@ -40,8 +43,6 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{E one star}")
     lines.append(dual_patch(algo, (1,e,pi), minsize=70, nsubs=5,
         height="3cm"))
-    lines.append(r"\subsection{Matrices}")
-    lines.append(matrices(algo, ncols=3))
     lines.append(r"\newpage")
     file_tex = 'section_{}.tex'.format(algo.name())
     write_to_file(file_tex, "\n".join(lines))
@@ -304,7 +305,7 @@ def lyapunov_global_comparison(algos, n_orbits, n_iterations):
     lines = []
     lines.append(r"\section{Comparison of Lyapunov exponents}")
     lines.append(r"({} orbits of ".format(n_orbits))
-    lines.append(r"{} iterations each)\\".format(n_iterations))
+    lines.append(r"{} iterations each)".format(n_iterations))
     lines.append(r"\begin{center}")
     lines.append(latex(T))
     lines.append(r"\end{center}")
@@ -343,5 +344,5 @@ if is_script:
 
     algos = [mcf.Brun(), mcf.Poincare(), mcf.Selmer(), mcf.FullySubtractive(),
             mcf.ARP(), mcf.Reverse(), mcf.Cassaigne()]
-    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^7)
+    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^6)
 
