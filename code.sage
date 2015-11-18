@@ -60,10 +60,13 @@ def input_density(algo):
 
 def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
     try:
-        algo.invariant_measure_plot(n_iterations, ndivs, norm='1')
+        fig = algo.invariant_measure_wireframe_plot(n_iterations, 
+                           ndivs, norm='1')
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
-    file = 'mesure_%s_iter%s_div%s.png' % (algo.name(), n_iterations, ndivs)
+    file = 'density_%s.png' % algo.name()
+    fig.savefig(file)
+    print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
 def include_graphics_nat_ext(algo, width=1):
