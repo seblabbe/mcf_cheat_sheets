@@ -3,7 +3,7 @@ FILE = cheat_sheet
 tex:
 	pdflatex $(FILE).tex
 
-all: content tikz2pdf bib
+all: content bib
 	pdflatex $(FILE).tex
 
 content: code.sage
@@ -14,9 +14,6 @@ bib:
 	bibtex $(FILE)
 	pdflatex $(FILE).tex
 	pdflatex $(FILE).tex
-
-tikz2pdf:
-	sage tikz_2_pdf_all.sage
 
 .PHONY : clean
 clean :
@@ -32,11 +29,8 @@ clean :
 	rm -f mesure*.png
 	rm -f section_*.tex
 	rm -f sections.tex
-	rm -f nat_ext*.tikz
 	rm -f nat_ext*.pdf
-	rm -f cylinders_*.tikz
 	rm -f cylinders_*.pdf
-	rm -f dual_patch_*.tikz
 	rm -f dual_patch_*.pdf
 	rm -f cube.tikz
 	rm -f cube.pdf

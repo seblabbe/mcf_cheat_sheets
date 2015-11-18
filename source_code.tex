@@ -1,16 +1,17 @@
 \section{Requirements}
 The image in these cheat sheets were created with the optional Sage package
-\texttt{slabbe-0.2.spkg}, the script \texttt{tikz2pdf} and Sage with the
-following version:
+\texttt{slabbe-0.2.spkg} and Sage with the following version:
 \begin{verbatim}
-sage -v
+$ sage -v
 SageMath Version 6.10.beta3, Release Date: 2015-11-05
 \end{verbatim}
 My Sage package is available at:
 \begin{verbatim}
-sage -p slabbe-0.2.spkg TODO
-tikz2pdf TODO
+$ sage -p slabbe-0.2.spkg TODO
 \end{verbatim}
+\section{Sage Code}
+This section shows how to reproduce any of the results in these Cheat Sheets.
+\subsection{Definition}
 Define a Multidimensional Continued Fraction algorithm:
 \begin{verbatim}
 sage: from slabbe.mult_cont_frac import Brun
@@ -21,10 +22,6 @@ You may replace \texttt{Brun} above by any of the following:
 Brun, Poincare, Selmer, FullySubtractive, 
 ARP, Reverse, Cassaigne
 \end{verbatim}
-\section{Sage Code}
-This section shows how to reproduce any of the results in these Cheat Sheets.
-\subsection{Definition}
-This section is hand written.
 \subsection{Matrices}
 \begin{verbatim}
 sage: cocycle = algo.matrix_cocycle()
@@ -33,8 +30,8 @@ sage: cocycle.gens()
 \subsection{Cylinders}
 \begin{verbatim}
 sage: cocycle = algo.matrix_cocycle()
-sage: s = cocycle.tikz_n_cylinders(3, scale=3)
-sage: view(s, tightpage=True)
+sage: t = cocycle.tikz_n_cylinders(3, scale=3)
+sage: t.pdf()
 \end{verbatim}
 \subsection{Density function}
 This section is hand written.
@@ -45,9 +42,9 @@ sage: algo.invariant_measure_plot(n_iterations=10^6,
 \end{verbatim}
 \subsection{Natural extension}
 \begin{verbatim}
-sage: s = algo.natural_extension_tikz(n_iterations=1200, 
+sage: t = algo.natural_extension_tikz(n_iterations=1200, 
                marksize=.8, group_size="2 by 2")
-sage: view(s, tightpage=True)
+sage: t.pdf()
 \end{verbatim}
 \subsection{Lyapunov exponents}
 The algorithm that computes Lyapunov exponents was provided to me
@@ -78,9 +75,10 @@ sage: algo.dual_substitutions()
 \end{verbatim}
 \subsection{E one star}
 \begin{verbatim}
+sage: from slabbe import TikzPicture
 sage: P = algo.e_one_star_patch(v=(1,e,pi), n=8)
 sage: s = P.plot_tikz()
-sage: view(s, tightpage=True)
+sage: TikzPicture(s).pdf()
 \end{verbatim}
 \subsection{Comparison of Lyapunov exponents}
 \begin{verbatim}
