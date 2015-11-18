@@ -26,7 +26,7 @@ clean :
 	rm -f $(FILE).run.xml
 	rm -f code.sage.py
 	rm -f tikz_2_pdf_all.sage.py
-	rm -f mesure*.png
+	rm -f density*.png
 	rm -f section_*.tex
 	rm -f sections.tex
 	rm -f nat_ext*.pdf

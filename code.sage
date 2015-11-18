@@ -14,7 +14,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines = []
     lines.append(r"\section{%s algorithm}" % algo.name())
     lines.append(r"\subsection{Definition}")
-    lines.append(r"\input{def_%s.tex}" % algo.name())
+    lines.append(r"\input{def_%s.tex}" % algo.class_name())
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=3))
     lines.append(r"\subsection{Cylinders}")
@@ -45,14 +45,14 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(dual_patch(algo, (1,e,pi), minsize=70, nsubs=5,
         height="3cm"))
     lines.append(r"\newpage")
-    file_tex = 'section_{}.tex'.format(algo.name())
+    file_tex = 'section_{}.tex'.format(algo.class_name())
     write_to_file(file_tex, "\n".join(lines))
     with open('sections.tex', 'a') as f:
         f.write(r"\input{{{}}}".format(file_tex)+'\n')
 
 def input_density(algo):
     import os
-    filename = "density_{}.tex".format(algo.name())
+    filename = "density_{}.tex".format(algo.class_name())
     if os.path.exists(filename):
         return r"\input{{{}}}".format(filename)
     else:
@@ -64,7 +64,7 @@ def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
                            ndivs, norm='1')
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
-    file = 'density_%s.png' % algo.name()
+    file = 'density_%s.png' % algo.class_name()
     fig.savefig(file)
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
@@ -81,7 +81,7 @@ def include_graphics_nat_ext(algo, width=1):
                 group_size="2 by 2")
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
-    file = 'nat_ext_{}.pdf'.format(algo.name())
+    file = 'nat_ext_{}.pdf'.format(algo.class_name())
     print t.pdf(file)
     lines = []
     lines.append(r"\input{nat_ext_def.tex}")
@@ -95,7 +95,7 @@ def include_graphics_cylinders(algo, n, width=.3):
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     s = cocycle.tikz_n_cylinders(n, scale=3)
-    file = 'cylinders_{}_n{}.pdf'.format(algo.name(), n)
+    file = 'cylinders_{}_n{}.pdf'.format(algo.class_name(), n)
     print s.pdf(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
@@ -108,7 +108,7 @@ def include_graphics_nat_ext_PIL(algo, width=1):
     n_iterations = 10^3
     P = algo.natural_extension_part_png(n_iterations, draw=draw,
       branch_order=b, color_dict=c, urange=(-.6,.6), vrange=(-.6,.6))
-    file = 'nat_ext_{}_{}.png'.format(algo.name(), draw)
+    file = 'nat_ext_{}_{}.png'.format(algo.class_name(), draw)
     P.save(file)
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
@@ -199,7 +199,7 @@ def dual_patch(algo, v, minsize=100, nsubs=5, height="3cm"):
         return "{}: {}".format(err.__class__.__name__, err)
     it = algo.coding_iterator(v)
     s = P.plot_tikz()
-    file = 'dual_patch_{}.pdf'.format(algo.name())
+    file = 'dual_patch_{}.pdf'.format(algo.class_name())
     print TikzPicture(s).pdf(file)
     lines = []
     lines.append(r"Using vector $v={}$, the {}-th ".format(latex(v),n))
@@ -232,7 +232,7 @@ def discrepancy_histogram(algo, length, width=.6, fontsize=30,
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     H = histogram(D.values())
-    file = 'discrepancy_histo_{}.png'.format(algo.name())
+    file = 'discrepancy_histo_{}.png'.format(algo.class_name())
     H.save(file, fontsize=fontsize, figsize=figsize)
     print "Creation of the file {}".format(file)
     lines = []
