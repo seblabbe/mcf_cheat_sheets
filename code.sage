@@ -77,13 +77,17 @@ def include_graphics_nat_ext(algo, width=1):
         n_iterations = 3000
         marksize = .4
     try:
-        s = algo.natural_extension_tikz(n_iterations, marksize=marksize,
+        t = algo.natural_extension_tikz(n_iterations, marksize=marksize,
                 group_size="2 by 2")
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     file = 'nat_ext_{}.pdf'.format(algo.name())
-    print s.pdf(file)
-    return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
+    print t.pdf(file)
+    lines = []
+    lines.append(r"\input{nat_ext_def.tex}")
+    lines.append(r"\includegraphics[width={}"
+                  "\linewidth]{{{}}}".format(width, file))
+    return '\n'.join(lines)
 
 def include_graphics_cylinders(algo, n, width=.3):
     try:
@@ -219,75 +223,12 @@ def unit_cube():
     s = cube.plot_tikz()
     print TikzPicture(s).pdf('cube.pdf')
 
-def discrepancy(self, verbose=False):
-    r"""
-    Return the discrepancy i.e. the Tijdeman distance D(w) as defined in
-    the chairman paper.
-
-    INPUT:
-
-    - ``self`` - word path
-    - ``verbose`` - bool
-
-    EXAMPLES::
-
-        sage: W = WordPaths([0,1], ((1,0), (0,1)))
-        sage: w = W(words.ChristoffelWord(5,8))
-        sage: for c in w.conjugates(): print c, discrepancy(c)
-        0010010100101 12/13
-        0100101001010 7/13
-        1001010010100 10/13
-        0010100101001 10/13
-        0101001010010 7/13
-        1010010100100 12/13
-        0100101001001 8/13
-        1001010010010 9/13
-        0010100100101 11/13
-        0101001001010 6/13
-        1010010010100 11/13
-        0100100101001 9/13
-        1001001010010 8/13
-
-    """
-    v = self.abelian_vector()
-    lambda_ = vector(v) / sum(v)
-    pts = self.points()
-    L = [max(map(abs, lambda_ * i - pt)) for i, pt in enumerate(pts)]
-    if verbose:
-        print L
-    return max(L)
-
-
-def discrepancy_statistics(algo, length):
-    r"""
-    EXAMPLES::
-
-        sage: from slabbe.mult_cont_frac import Brun
-        sage: discrepancy_statistics(Brun(), 5)
-        {[1, 1, 3]: 6/5,
-         [1, 2, 2]: 4/5,
-         [1, 3, 1]: 4/5,
-         [2, 1, 2]: 4/5,
-         [2, 2, 1]: 4/5,
-         [3, 1, 1]: 4/5}
-    """
-    D = {}
-    W = WordPaths([1,2,3], steps = [(1,0,0), (0,1,0), (0,0,1)] )
-    for c in Compositions(length, length=3, min_part=1):
-        w = algo.s_adic_word(c)
-        if c!=w.abelian_vector(): 
-            v = w.abelian_vector()
-            raise ValueError("c={} but vector is {}".format(c,v))
-        w = W(w)
-        D[c] = discrepancy(w)
-    return D
-
 def discrepancy_histogram(algo, length, width=.6, fontsize=30,
         figsize=[8,3]):
     if QUICK:
         length=20
     try:
-        D = discrepancy_statistics(algo, length)
+        D = algo.discrepancy_statistics(length)
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     H = histogram(D.values())
