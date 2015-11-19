@@ -236,7 +236,8 @@ def discrepancy_histogram(algo, length, width=.6, fontsize=30,
     H.save(file, fontsize=fontsize, figsize=figsize)
     print "Creation of the file {}".format(file)
     lines = []
-    lines.append(r"Discrepancy for all {} $S$-adic words with directions".format(len(D)))
+    lines.append(r"Discrepancy \cite{{MR593979}} for all {}".format(len(D)))
+    lines.append(" $S$-adic words with directions")
     lines.append("$v\in\mathbb{N}^3_{>0}$")
     lines.append(r"such that $v_1+v_2+v_3={}$:".format(length))
     lines.append(r"\begin{center}")
