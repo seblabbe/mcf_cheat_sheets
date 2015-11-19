@@ -38,12 +38,12 @@ This section is hand written.
 \subsection{Invariant measure}
 \begin{verbatim}
 sage: algo.invariant_measure_plot(n_iterations=10^6,
-                 ndivs=40, norm='1')
+....:            ndivs=40, norm='1')
 \end{verbatim}
 \subsection{Natural extension}
 \begin{verbatim}
 sage: t = algo.natural_extension_tikz(n_iterations=1200, 
-               marksize=.8, group_size="2 by 2")
+....:          marksize=.8, group_size="2 by 2")
 sage: t.pdf()
 \end{verbatim}
 \subsection{Lyapunov exponents}
@@ -67,8 +67,8 @@ sage: map(w[:10000].number_of_factors, range(21))
 \end{verbatim}
 \subsection{Discrepancy}
 \begin{verbatim}
-D = algo.discrepancy_statistics(length=20)
-histogram(D.values())
+sage: D = algo.discrepancy_statistics(length=20)
+sage: histogram(D.values())
 \end{verbatim}
 \subsection{Dual substitutions}
 \begin{verbatim}
@@ -85,8 +85,8 @@ sage: TikzPicture(s).pdf()
 \begin{verbatim}
 sage: import slabbe.mult_cont_frac as mcf
 sage: from slabbe.lyapunov import lyapunov_comparison_table
-sage: algos = [mcf.Brun(), mcf.Selmer(), mcf.ARP(), mcf.Reverse(),
-      mcf.Cassaigne()]
+sage: algos = [mcf.Brun(), mcf.Selmer(), mcf.ARP(), 
+....:          mcf.Reverse(), mcf.Cassaigne()]
 sage: lyapunov_comparison_table(algos, n_orbits=30, 
-                                n_iterations=10^7)
+....:                           n_iterations=10^7)
 \end{verbatim}
