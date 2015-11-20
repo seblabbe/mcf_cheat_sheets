@@ -7,7 +7,7 @@ from slabbe import TikzPicture
 import numpy as np
 from sage.functions.other import floor
 
-QUICK = True
+VERSION = 'draft'
 
 @parallel
 def algo_to_tex(algo, cylinders_depth=[1,2,3]):
@@ -18,7 +18,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Matrices}")
     lines.append(matrices(algo, ncols=3))
     lines.append(r"\subsection{Cylinders}")
-    if QUICK:
+    if VERSION == 'draft':
         cylinders_depth.pop()
     for d in cylinders_depth:
         lines.append(include_graphics_cylinders(algo,d,width=.3))
@@ -26,18 +26,27 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(input_density(algo))
     lines.append(r"\subsection{Invariant measure}")
     lines.append(include_graphics_inv_measure(algo, n_iterations=10^6,
-        ndivs=40, width=.8, ext='pdf'))
+        ndivs=30, width=.8, ext='pdf'))
     lines.append(r"\subsection{Natural extension}")
-    lines.append(include_graphics_nat_ext(algo, width=1, ext='png'))
+    lines.append(include_graphics_nat_ext(algo, n_iterations=1200, marksize=.8,
+                                          width=1, ext='png'))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
-    lines.append(lyapunov_array(algo, ntimes=30, n_iterations=10^6))
+    if VERSION == 'draft':
+        n_iterations=10^6
+    else:
+        n_iterations=10^6
+    lines.append(lyapunov_array(algo, ntimes=30, n_iterations=n_iterations))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
     lines.append(r"\subsection{$S$-adic word example}")
     lines.append(s_adic_word(algo, nsubs=10))
     lines.append(r"\subsection{Discrepancy}")
-    lines.append(discrepancy_histogram(algo, length=50, width=.6,
+    if VERSION == 'draft':
+        length=20
+    else:
+        length=50
+    lines.append(discrepancy_histogram(algo, length=length, width=.6,
         fontsize=30,figsize=[8,3]))
     lines.append(r"\subsection{Dual substitutions}")
     lines.append(dual_substitutions(algo, ncols=3))
@@ -69,13 +78,7 @@ def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1, ext
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
-def include_graphics_nat_ext(algo, width=1, ext='png'):
-    if QUICK:
-        n_iterations = 1200
-        marksize = .8
-    else:
-        n_iterations = 3000
-        marksize = .4
+def include_graphics_nat_ext(algo, n_iterations, marksize, width=1, ext='png'):
     try:
         t = algo.natural_extension_tikz(n_iterations, marksize=marksize,
                 group_size="2 by 2")
@@ -230,8 +233,6 @@ def unit_cube():
 
 def discrepancy_histogram(algo, length, width=.6, fontsize=30,
         figsize=[8,3]):
-    if QUICK:
-        length=20
     try:
         D = algo.discrepancy_statistics(length)
     except Exception as err:
@@ -293,5 +294,9 @@ if is_script:
 
     algos = [mcf.Brun(), mcf.Poincare(), mcf.Selmer(), mcf.FullySubtractive(),
             mcf.ARP(), mcf.Reverse(), mcf.Cassaigne()]
-    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=10^6)
+    if VERSION == 'draft':
+        n_iterations=10^6
+    else:
+        n_iterations=10^7
+    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=n_iterations)
 
