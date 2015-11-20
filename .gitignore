@@ -1,6 +1,7 @@
 ## My generated files
 *.sage.py
 density*.png
+density*.pdf
 section*.tex
 nat_ext*.png
 nat_ext*.pdf

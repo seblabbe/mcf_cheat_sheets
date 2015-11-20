@@ -26,7 +26,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(input_density(algo))
     lines.append(r"\subsection{Invariant measure}")
     lines.append(include_graphics_inv_measure(algo, n_iterations=10^6,
-        ndivs=40, width=.8))
+        ndivs=40, width=.8, ext='pdf'))
     lines.append(r"\subsection{Natural extension}")
     lines.append(include_graphics_nat_ext(algo, width=1, ext='png'))
     #lines.append(include_graphics_nat_ext_PIL(algo))
@@ -58,13 +58,13 @@ def input_density(algo):
     else:
         return "Unknown"
 
-def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
+def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1, ext='pdf'):
     try:
         fig = algo.invariant_measure_wireframe_plot(n_iterations, 
                            ndivs, norm='1')
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
-    file = 'density_%s.png' % algo.class_name()
+    file = 'density_{}.{}'.format(algo.class_name(), ext)
     fig.savefig(file)
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
