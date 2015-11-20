@@ -30,6 +30,7 @@ clean :
 	rm -f section_*.tex
 	rm -f sections.tex
 	rm -f nat_ext*.pdf
+	rm -f nat_ext*.png
 	rm -f cylinders_*.pdf
 	rm -f dual_patch_*.pdf
 	rm -f cube.tikz

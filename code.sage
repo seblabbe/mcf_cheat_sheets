@@ -28,7 +28,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(include_graphics_inv_measure(algo, n_iterations=10^6,
         ndivs=40, width=.8))
     lines.append(r"\subsection{Natural extension}")
-    lines.append(include_graphics_nat_ext(algo))
+    lines.append(include_graphics_nat_ext(algo, width=1, ext='png'))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
     lines.append(lyapunov_array(algo, ntimes=30, n_iterations=10^6))
@@ -69,7 +69,7 @@ def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1):
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
-def include_graphics_nat_ext(algo, width=1):
+def include_graphics_nat_ext(algo, width=1, ext='png'):
     if QUICK:
         n_iterations = 1200
         marksize = .8
@@ -81,8 +81,13 @@ def include_graphics_nat_ext(algo, width=1):
                 group_size="2 by 2")
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
-    file = 'nat_ext_{}.pdf'.format(algo.class_name())
-    print t.pdf(file)
+    file = 'nat_ext_{}.{}'.format(algo.class_name(), ext)
+    if ext == 'png':
+        print t.png(file)
+    elif ext == 'pdf':
+        print t.pdf(file)
+    else:
+        raise ValueError('Unknown extention ext(={})'.format(ext))
     lines = []
     lines.append(r"\input{nat_ext_def.tex}")
     lines.append(r"\includegraphics[width={}"
