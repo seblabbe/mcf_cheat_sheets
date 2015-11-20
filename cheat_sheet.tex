@@ -75,41 +75,34 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt plus 0.5ex}
 
-%My Environments
-\newtheorem{example}[section]{Example}
-% -----------------------------------------------------------------------
-
 \begin{document}
 
 \title{Multidimensional Continued Fraction Algorithms Cheat Sheets}
-\author{Sébastien Labbé}
+\author{Sébastien Labbé\footnote{
+Université de Liège,
+B\^at. B37 Institut de Math\'ematiques,
+Grande Traverse 12,
+4000 Li\`ege,
+Belgium,
+\texttt{slabbe@ulg.ac.be}.}}
+\date{}
 
 \maketitle
 
-\begin{abstract}
-    Multidimensional Continued Fraction Algorithms are generalizations of the
-    Euclid algorithm and find the gcd of two or more numbers.
-    In these Cheat Sheets, we consider $3$-dimensional continued fraction
-    algorithms that acts symmetrically on the positive cone $\mathbb{R}^3_+$.
-    We include old ones (Poincar\'e, Brun, Selmer, Fully Subtractive)
-    and new ones (Arnoux-Rauzy-Poincar\'e, Reverse, Cassaigne).
-    For each algorithm, there is one page (a cheat sheet) full of
-    informations. It includes its definition, the $n$-cylinders, the density
-    function of an abs. cont. invariant measure, the domain of the natural
-    extension, its lyapunov exponents.
-
-    There are also information on the discrete geometry aspects of the
-    algorithms. This includes the associated substitutions,
-    the discrepancy of $S$-adic words, dual substitutions and subsets of
-    discrete planes generated.
-    
-    The last page contains a table of comparison of Lyapunov exponents.
-    Everything in these cheat sheet can be reproduced in Sage software using
-    the optional Sage package \texttt{slabbe-0.2.spkg}.
-\end{abstract}
 
 
 \thispagestyle{empty} % remove page number from first page (after maketitle)
+
+
+\begin{multicols}{2}
+\input{abstract.tex}
+\columnbreak
+\tableofcontents
+\end{multicols}
+
+\raggedright
+
+\newpage
 
 \begin{multicols}{3}
 % multicol parameters
@@ -122,15 +115,7 @@
 \newcommand{\note}[1]{\hfill\textrm{\textcolor{gray}{#1}}}
 \newcommand{\args}[1]{\textit{\textcolor{blue}{#1}}}
 \newcommand{\stdout}[1]{\textcolor{Sepia}{#1}}
-
-\tableofcontents
-
-\raggedright
 \footnotesize
-
-%\columnbreak
-
-\newpage
 
 \input{sections.tex}
 \end{multicols}
