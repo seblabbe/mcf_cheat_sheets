@@ -7,7 +7,7 @@ from slabbe import TikzPicture
 import numpy as np
 from sage.functions.other import floor
 
-VERSION = 'draft'
+VERSION = 'final'
 
 @parallel
 def algo_to_tex(algo, cylinders_depth=[1,2,3]):
@@ -35,7 +35,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     if VERSION == 'draft':
         n_iterations=10^6
     else:
-        n_iterations=10^6
+        n_iterations=10^7
     lines.append(lyapunov_array(algo, ntimes=30, n_iterations=n_iterations))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
@@ -297,6 +297,6 @@ if is_script:
     if VERSION == 'draft':
         n_iterations=10^6
     else:
-        n_iterations=10^7
+        n_iterations=10^8
     lyapunov_global_comparison(algos, n_orbits=30, n_iterations=n_iterations)
 
