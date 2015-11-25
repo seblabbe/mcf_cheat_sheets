@@ -39,7 +39,9 @@ clean :
 	rm -f $(FILE).run.xml
 	rm -f code.sage.py
 	rm -f tikz_2_pdf_all.sage.py
+	rm -f code_lyap.sage.py
 	rm -f density*.png
+	rm -f density*.pdf
 	rm -f section_*.tex
 	rm -f sections.tex
 	rm -f nat_ext*.pdf
@@ -49,7 +51,7 @@ clean :
 	rm -f cube.tikz
 	rm -f cube.pdf
 	rm -f discrepancy_histo_*.png
-	rm -f lyapunov_table.tex
+	#rm -f lyapunov_table.tex
 
 
 

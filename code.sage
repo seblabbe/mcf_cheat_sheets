@@ -7,8 +7,21 @@ from slabbe import TikzPicture
 import numpy as np
 from sage.functions.other import floor
 
-VERSION = 'final'
+###########
+# detect draft or final
+###########
+with open('_version.txt', 'r') as f:
+    s = f.readline()
+    if 'draft' in  s:
+        VERSION = 'draft'
+    elif 'final' in s:
+        VERSION = 'final'
+    else:
+        raise ValueError("should be draft or final not (={})".format(s))
 
+###########
+# Global function
+###########
 @parallel
 def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines = []
@@ -35,7 +48,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     if VERSION == 'draft':
         n_iterations=10^6
     else:
-        n_iterations=10^7
+        n_iterations=10^8
     lines.append(lyapunov_array(algo, ntimes=30, n_iterations=n_iterations))
     lines.append(r"\subsection{Substitutions}")
     lines.append(substitutions(algo, ncols=3))
@@ -44,10 +57,14 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Discrepancy}")
     if VERSION == 'draft':
         length=20
+        fontsize=30
+        bins=10
     else:
-        length=50
+        length=500
+        fontsize=20
+        bins=20
     lines.append(discrepancy_histogram(algo, length=length, width=.6,
-        fontsize=30,figsize=[8,3]))
+        fontsize=fontsize,figsize=[8,3]),bins=bins)
     lines.append(r"\subsection{Dual substitutions}")
     lines.append(dual_substitutions(algo, ncols=3))
     lines.append(r"\subsection{E one star}")
@@ -58,7 +75,11 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     write_to_file(file_tex, "\n".join(lines))
     with open('sections.tex', 'a') as f:
         f.write(r"\input{{{}}}".format(file_tex)+'\n')
+    print "Done with algo {}".format(algo.class_name())
 
+###########
+# Functions
+###########
 def input_density(algo):
     import os
     filename = "density_{}.tex".format(algo.class_name())
@@ -232,12 +253,12 @@ def unit_cube():
     print TikzPicture(s).pdf('cube.pdf')
 
 def discrepancy_histogram(algo, length, width=.6, fontsize=30,
-        figsize=[8,3]):
+        figsize=[8,3], bins=10):
     try:
         D = algo.discrepancy_statistics(length)
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
-    H = histogram(D.values())
+    H = histogram(D.values(), bins=bins)
     file = 'discrepancy_histo_{}.png'.format(algo.class_name())
     H.save(file, fontsize=fontsize, figsize=figsize)
     print "Creation of the file {}".format(file)
@@ -250,19 +271,6 @@ def discrepancy_histogram(algo, length, width=.6, fontsize=30,
     lines.append(r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file))
     lines.append(r"\end{center}")
     return '\n'.join(lines)
-
-def lyapunov_global_comparison(algos, n_orbits, n_iterations):
-    from slabbe.lyapunov import lyapunov_comparison_table
-    T = lyapunov_comparison_table(algos, n_orbits, n_iterations)
-    lines = []
-    lines.append(r"\section{Comparison of Lyapunov exponents}")
-    lines.append(r"({} orbits of ".format(n_orbits))
-    lines.append(r"{} iterations each)".format(n_iterations))
-    lines.append(r"\begin{center}")
-    lines.append(latex(T))
-    lines.append(r"\end{center}")
-    with open('lyapunov_table.tex','w') as f:
-        f.write('\n'.join(lines))
 
 ###################
 # Utility functions
@@ -278,12 +286,12 @@ def write_to_file(filename, s):
 is_script = True
 if is_script:
     with open('sections.tex','w') as f:
-        # erase everything
+        # erase this file
         pass
     unit_cube()
-    L = [(mcf.Brun(), [1,2,3,4]),
-        (mcf.Poincare(), [1,2,3,4]),
-        (mcf.Selmer(), [1,2,3,4,5]),
+    L = [(mcf.Brun(), [1,2,3,4,5,6]),
+        (mcf.Poincare(), [1,2,3,4,5]),
+        (mcf.Selmer(), [1,2,3,4,5,6]),
         (mcf.FullySubtractive(), [1,2,3,4,5,6]),
         (mcf.ARP(), [1,2,3]),
         (mcf.Reverse(), [1,2,3,4,5,6]),
@@ -291,12 +299,4 @@ if is_script:
         #(mcf.ArnouxRauzy(), [1,2,3,4,5,6])
         ]
     list(algo_to_tex(L))
-
-    algos = [mcf.Brun(), mcf.Poincare(), mcf.Selmer(), mcf.FullySubtractive(),
-            mcf.ARP(), mcf.Reverse(), mcf.Cassaigne()]
-    if VERSION == 'draft':
-        n_iterations=10^6
-    else:
-        n_iterations=10^8
-    lyapunov_global_comparison(algos, n_orbits=30, n_iterations=n_iterations)
 
