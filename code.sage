@@ -60,7 +60,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
         fontsize=30
         bins=10
     else:
-        length=500
+        length=200
         fontsize=20
         bins=20
     lines.append(discrepancy_histogram(algo, length=length, width=.6,
