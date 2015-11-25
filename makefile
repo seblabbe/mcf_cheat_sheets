@@ -3,11 +3,24 @@ FILE = cheat_sheet
 tex:
 	pdflatex $(FILE).tex
 
-all: content bib
+all: draft bib
 	pdflatex $(FILE).tex
 
-content: code.sage
+draft: code.sage
+	echo "draft" > _version.txt
 	sage code.sage
+
+final: code.sage
+	echo "final" > _version.txt
+	sage code.sage
+
+draft_lya:
+	echo "draft" > _version.txt
+	sage code_lyap.sage
+
+final_lya:
+	echo "final" > _version.txt
+	sage code_lyap.sage
 
 bib:
 	pdflatex $(FILE).tex

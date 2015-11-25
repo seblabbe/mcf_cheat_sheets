@@ -11,6 +11,7 @@ cheat_sheet.pdf
 discrepancy_histo_*.png
 cube.pdf
 lyapunov_table.tex
+_version.txt
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
