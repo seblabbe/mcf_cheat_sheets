@@ -64,7 +64,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
         fontsize=20
         bins=20
     lines.append(discrepancy_histogram(algo, length=length, width=.6,
-        fontsize=fontsize,figsize=[8,3]),bins=bins)
+        fontsize=fontsize,figsize=[8,3],bins=bins))
     lines.append(r"\subsection{Dual substitutions}")
     lines.append(dual_substitutions(algo, ncols=3))
     lines.append(r"\subsection{E one star}")
