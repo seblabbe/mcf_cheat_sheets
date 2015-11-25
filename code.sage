@@ -82,7 +82,7 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
 ###########
 def input_density(algo):
     import os
-    filename = "density_{}.tex".format(algo.class_name())
+    filename = "densityf_{}.tex".format(algo.class_name())
     if os.path.exists(filename):
         return r"\input{{{}}}".format(filename)
     else:
