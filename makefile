@@ -9,18 +9,19 @@ all: draft bib
 draft: code.sage
 	echo "draft" > _version.txt
 	sage code.sage
+	sage code_lyap.sage
 
-final: code.sage
-	echo "final" > _version.txt
+arxiv: code.sage
+	echo "arxiv" > _version.txt
 	sage code.sage
 
-draft_lya:
-	echo "draft" > _version.txt
+arxiv_lya:
+	echo "arxiv" > _version.txt
 	sage code_lyap.sage
 
-final_lya:
-	echo "final" > _version.txt
-	sage code_lyap.sage
+arxiv_hd: code.sage
+	echo "arxiv_hd" > _version.txt
+	sage code.sage
 
 bib:
 	pdflatex $(FILE).tex

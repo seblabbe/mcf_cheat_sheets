@@ -10,13 +10,11 @@ import slabbe.mult_cont_frac as mcf
 # detect draft or final
 #######################
 with open('_version.txt', 'r') as f:
-    s = f.readline()
-    if 'draft' in  s:
-        VERSION = 'draft'
-    elif 'final' in s:
-        VERSION = 'final'
-    else:
-        raise ValueError("should be draft or final not (={})".format(s))
+    VERSION = f.readline().strip()
+    if VERSION not in ('draft', 'arxiv', 'arxiv_hd'):
+        raise ValueError("should be draft or arxiv or "
+                         "arxiv_hd not (={})".format(VERSION))
+    print "Using parameters for VERSION={}".format(VERSION)
 
 ###########
 # Functions

@@ -11,13 +11,11 @@ from sage.functions.other import floor
 # detect draft or final
 ###########
 with open('_version.txt', 'r') as f:
-    s = f.readline()
-    if 'draft' in  s:
-        VERSION = 'draft'
-    elif 'final' in s:
-        VERSION = 'final'
-    else:
-        raise ValueError("should be draft or final not (={})".format(s))
+    VERSION = f.readline().strip()
+    if VERSION not in ('draft', 'arxiv', 'arxiv_hd'):
+        raise ValueError("should be draft or arxiv or "
+                         "arxiv_hd not (={})".format(VERSION))
+    print "Using parameters for VERSION={}".format(VERSION)
 
 ###########
 # Global function
@@ -38,11 +36,23 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
     lines.append(r"\subsection{Density function}")
     lines.append(input_density(algo))
     lines.append(r"\subsection{Invariant measure}")
+    if VERSION == 'arxiv':
+        ext = 'png'
+        dpi = 30
+    else:
+        ext = 'pdf'
+        dpi = 100 # I think dpi is ignored when ext is 'pdf'
     lines.append(include_graphics_inv_measure(algo, n_iterations=10^6,
-        ndivs=30, width=.8, ext='pdf'))
+        ndivs=30, width=.8, ext=ext, dpi=dpi))
     lines.append(r"\subsection{Natural extension}")
-    lines.append(include_graphics_nat_ext(algo, n_iterations=1200, marksize=.8,
-                                          width=1, ext='png'))
+    if VERSION == 'arxiv':
+        ext = 'png'
+        density = 60
+    else:
+        ext = 'pdf'
+        dpi = 100 # I think dpi is ignored when ext is 'pdf'
+    lines.append(include_graphics_nat_ext(algo, n_iterations=1000,
+        marksize=1, width=1, ext='png', density=60))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
     if VERSION == 'draft':
@@ -88,18 +98,20 @@ def input_density(algo):
     else:
         return "Unknown"
 
-def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40, width=1, ext='pdf'):
+def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40,
+        width=1, ext='pdf', dpi=50):
     try:
         fig = algo.invariant_measure_wireframe_plot(n_iterations, 
                            ndivs, norm='1')
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     file = 'density_{}.{}'.format(algo.class_name(), ext)
-    fig.savefig(file)
+    fig.savefig(file, dpi=dpi)
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
-def include_graphics_nat_ext(algo, n_iterations, marksize, width=1, ext='png'):
+def include_graphics_nat_ext(algo, n_iterations, marksize, width=1,
+        ext='png', density=100):
     try:
         t = algo.natural_extension_tikz(n_iterations, marksize=marksize,
                 group_size="2 by 2")
@@ -107,7 +119,7 @@ def include_graphics_nat_ext(algo, n_iterations, marksize, width=1, ext='png'):
         return "{}: {}".format(err.__class__.__name__, err)
     file = 'nat_ext_{}.{}'.format(algo.class_name(), ext)
     if ext == 'png':
-        print t.png(file)
+        print t.png(file, density=density)
     elif ext == 'pdf':
         print t.pdf(file)
     else:
@@ -283,18 +295,18 @@ def write_to_file(filename, s):
 ###################
 # Script
 ###################
-is_script = True
+is_script = False
 if is_script:
     with open('sections.tex','w') as f:
         # erase this file
         pass
     unit_cube()
     L = [(mcf.Brun(), [1,2,3,4,5,6]),
-        (mcf.Poincare(), [1,2,3,4,5]),
+        (mcf.Poincare(), [1,2,3,4]),
         (mcf.Selmer(), [1,2,3,4,5,6]),
         (mcf.FullySubtractive(), [1,2,3,4,5,6]),
         (mcf.ARP(), [1,2,3]),
-        (mcf.Reverse(), [1,2,3,4,5,6]),
+        (mcf.Reverse(), [1,2,3,4,5]),
         (mcf.Cassaigne(), [1,2,3,4,5,6,7,8,9]),
         #(mcf.ArnouxRauzy(), [1,2,3,4,5,6])
         ]
