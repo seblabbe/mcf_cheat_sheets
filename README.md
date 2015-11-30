@@ -1,1 +1,0 @@
-# MCF Algorithms Cheat Sheets
