@@ -4,8 +4,8 @@ MCF Algorithms Cheat Sheets
 
 This is the source code for the preprint:
 
-    3-dimensional Continued Fraction Algorithms Cheat Sheets, November 2015, 9
-    p. `arXiv:1511.08399v1`__ [math.DS]
+    Sébastien Labbé, 3-dimensional Continued Fraction Algorithms Cheat Sheets,
+    November 2015, 9 p. `arXiv:1511.08399v1`__ [math.DS]
 
 __ http://arxiv.org/abs/1511.08399
 
@@ -23,4 +23,12 @@ and my optional Sage package `slabbe-0.2.spkg`__ which can be installed with::
 
 __ http://www.sagemath.org
 __ http://www.slabbe.org/Sage
+
+Usage
+-----
+
+To make a quick draft::
+
+    make draft
+    make bib
 
