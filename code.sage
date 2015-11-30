@@ -50,9 +50,9 @@ def algo_to_tex(algo, cylinders_depth=[1,2,3]):
         density = 60
     else:
         ext = 'pdf'
-        dpi = 100 # I think dpi is ignored when ext is 'pdf'
+        density = 100 # I think density is ignored when ext is 'pdf'
     lines.append(include_graphics_nat_ext(algo, n_iterations=1000,
-        marksize=1, width=1, ext='png', density=60))
+        marksize=1, width=1, ext=ext, density=density))
     #lines.append(include_graphics_nat_ext_PIL(algo))
     lines.append(r"\subsection{Lyapunov exponents}")
     if VERSION == 'draft':
@@ -106,7 +106,10 @@ def include_graphics_inv_measure(algo, n_iterations=10^6, ndivs=40,
     except Exception as err:
         return "{}: {}".format(err.__class__.__name__, err)
     file = 'density_{}.{}'.format(algo.class_name(), ext)
-    fig.savefig(file, dpi=dpi)
+    if ext == 'png':
+        fig.savefig(file, dpi=dpi)
+    elif ext == 'pdf':
+        fig.savefig(file)
     print "Creation of the file {}".format(file)
     return r"\includegraphics[width={}\linewidth]{{{}}}".format(width, file)
 
@@ -295,7 +298,7 @@ def write_to_file(filename, s):
 ###################
 # Script
 ###################
-is_script = False
+is_script = True
 if is_script:
     with open('sections.tex','w') as f:
         # erase this file
